@@ -1,0 +1,106 @@
+Removed Member From Class: ClassName=YW_001 Member=C100
+Removed Member From Class: ClassName=YW_001 Member=C101
+Removed Member From Class: ClassName=YW_001 Member=D12
+Removed Member From Class: ClassName=YW_001 Member=D?
+Removed Member From Class: ClassName=YW_001 Member=R100
+Removed Member From Class: ClassName=YW_001 Member=R101
+Removed Member From Class: ClassName=YW_001 Member=R102
+Removed Member From Class: ClassName=YW_001 Member=R105
+Removed Member From Class: ClassName=YW_001 Member=R?
+Removed Member From Class: ClassName=YW_001 Member=U11
+Change Component Designator: OldDesignator=C1 NewDesignator=C3
+Change Component Designator: OldDesignator=C2 NewDesignator=C7
+Change Component Designator: OldDesignator=C3 NewDesignator=C8
+Change Component Designator: OldDesignator=C4 NewDesignator=C9
+Change Component Designator: OldDesignator=C5 NewDesignator=C10
+Change Component Designator: OldDesignator=C100 NewDesignator=C4
+Change Component Designator: OldDesignator=C101 NewDesignator=C5
+Change Component Designator: OldDesignator=C? NewDesignator=C1
+Change Component Designator: OldDesignator=C? NewDesignator=C2
+Change Component Designator: OldDesignator=C? NewDesignator=C6
+Change Component Designator: OldDesignator=D1 NewDesignator=D7
+Change Component Designator: OldDesignator=D2 NewDesignator=D6
+Change Component Designator: OldDesignator=D3 NewDesignator=D5
+Change Component Designator: OldDesignator=D4 NewDesignator=D3
+Change Component Designator: OldDesignator=D12 NewDesignator=D4
+Change Component Designator: OldDesignator=D? NewDesignator=D1
+Change Component Designator: OldDesignator=D? NewDesignator=D2
+Change Component Designator: OldDesignator=R2 NewDesignator=R5
+Change Component Designator: OldDesignator=R3 NewDesignator=R13
+Change Component Designator: OldDesignator=R4 NewDesignator=R17
+Change Component Designator: OldDesignator=R5 NewDesignator=R18
+Change Component Designator: OldDesignator=R6 NewDesignator=R19
+Change Component Designator: OldDesignator=R7 NewDesignator=R20
+Change Component Designator: OldDesignator=R8 NewDesignator=R21
+Change Component Designator: OldDesignator=R9 NewDesignator=R22
+Change Component Designator: OldDesignator=R10 NewDesignator=R23
+Change Component Designator: OldDesignator=R11 NewDesignator=R24
+Change Component Designator: OldDesignator=R12 NewDesignator=R25
+Change Component Designator: OldDesignator=R13 NewDesignator=R26
+Change Component Designator: OldDesignator=R14 NewDesignator=R27
+Change Component Designator: OldDesignator=R15 NewDesignator=R28
+Change Component Designator: OldDesignator=R100 NewDesignator=R3
+Change Component Designator: OldDesignator=R101 NewDesignator=R4
+Change Component Designator: OldDesignator=R102 NewDesignator=R6
+Change Component Designator: OldDesignator=R105 NewDesignator=R10
+Change Component Designator: OldDesignator=R? NewDesignator=R2
+Change Component Designator: OldDesignator=R? NewDesignator=R7
+Change Component Designator: OldDesignator=R? NewDesignator=R8
+Change Component Designator: OldDesignator=R? NewDesignator=R9
+Change Component Designator: OldDesignator=R? NewDesignator=R11
+Change Component Designator: OldDesignator=R? NewDesignator=R12
+Change Component Designator: OldDesignator=R? NewDesignator=R14
+Change Component Designator: OldDesignator=R? NewDesignator=R15
+Change Component Designator: OldDesignator=R? NewDesignator=R16
+Change Component Designator: OldDesignator=U1 NewDesignator=U2
+Change Component Designator: OldDesignator=U2 NewDesignator=U5
+Change Component Designator: OldDesignator=U10 NewDesignator=U3
+Change Component Designator: OldDesignator=U11 NewDesignator=U1
+Change Component Designator: OldDesignator=U12 NewDesignator=U4
+Change Component Designator: OldDesignator=USB? NewDesignator=USB1
+Change Net Name : Old Net Name=NetC2_1 New Net Name=NetC7_1
+Change Net Name : Old Net Name=NetC3_1 New Net Name=NetC8_1
+Change Net Name : Old Net Name=NetC4_1 New Net Name=NetC9_1
+Change Net Name : Old Net Name=NetC5_1 New Net Name=NetC10_1
+Change Net Name : Old Net Name=NetC100_1 New Net Name=NetC4_1
+Change Net Name : Old Net Name=NetC?_1 New Net Name=NetC6_1
+Change Net Name : Old Net Name=NetC?_2 New Net Name=NetC2_2
+Change Net Name : Old Net Name=NetD1_1 New Net Name=NetD7_1
+Change Net Name : Old Net Name=NetD2_1 New Net Name=NetD6_1
+Change Net Name : Old Net Name=NetD3_1 New Net Name=NetD5_1
+Change Net Name : Old Net Name=NetD12_2 New Net Name=NetD4_2
+Change Net Name : Old Net Name=NetD?_1 New Net Name=NetD2_1
+Change Net Name : Old Net Name=NetR100_1 New Net Name=NetR3_1
+Change Net Name : Old Net Name=NetR102_1 New Net Name=NetR6_1
+Added Pin To Net: NetName=NetC1_2 Pin=C1-2
+Added Pin To Net: NetName=NetC1_2 Pin=R2-2
+Added Pin To Net: NetName=NetC1_2 Pin=D2-1
+Added Net: Name=NetC1_2
+Added Pin To Net: NetName=NetC6_2 Pin=C6-2
+Added Pin To Net: NetName=NetC6_2 Pin=USB1-6
+Added Net: Name=NetC6_2
+Added Pin To Net: NetName=NetD1_1 Pin=USB1-4
+Added Pin To Net: NetName=NetD1_1 Pin=D1-2
+Added Net: Name=NetD1_1
+Added Member To Class: ClassName=YW_001 Member=Component C7 104P
+Added Member To Class: ClassName=YW_001 Member=Component C8 104P
+Added Member To Class: ClassName=YW_001 Member=Component C9 104P
+Added Member To Class: ClassName=YW_001 Member=Component C10 104P
+Added Member To Class: ClassName=YW_001 Member=Component D5 HLMP-1503-D0000
+Added Member To Class: ClassName=YW_001 Member=Component D6 HLMP-1503-D0000
+Added Member To Class: ClassName=YW_001 Member=Component D7 HLMP-1503-D0000
+Added Member To Class: ClassName=YW_001 Member=Component R16 Res2
+Added Member To Class: ClassName=YW_001 Member=Component R17 10R
+Added Member To Class: ClassName=YW_001 Member=Component R18 10R
+Added Member To Class: ClassName=YW_001 Member=Component R19 10R
+Added Member To Class: ClassName=YW_001 Member=Component R20 10R
+Added Member To Class: ClassName=YW_001 Member=Component R21 10R
+Added Member To Class: ClassName=YW_001 Member=Component R22 10R
+Added Member To Class: ClassName=YW_001 Member=Component R23 10R
+Added Member To Class: ClassName=YW_001 Member=Component R24 10R
+Added Member To Class: ClassName=YW_001 Member=Component R25 2.2k
+Added Member To Class: ClassName=YW_001 Member=Component R26 2.2k
+Added Member To Class: ClassName=YW_001 Member=Component R27 2.2k
+Added Member To Class: ClassName=YW_001 Member=Component R28 2.2k
+Added Member To Class: ClassName=YW_001 Member=Component U5 STC8H8K64U-45I-LQFP48
+Added Room: Name=YW_001
