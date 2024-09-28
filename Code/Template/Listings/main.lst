@@ -1,10 +1,10 @@
-C51 COMPILER V9.59.0.0   MAIN                                                              09/28/2024 17:30:12 PAGE 1   
+C51 COMPILER V9.57.0.0   MAIN                                                              09/28/2024 22:48:09 PAGE 1   
 
 
-C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE MAIN
 OBJECT MODULE PLACED IN .\Objects\main.obj
-COMPILER INVOKED BY: D:\Worksoftware\Keil\ARM\C51\BIN\C51.EXE User\main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\User;.\Hardw
-                    -are;.\Startup;.\Readme) DEBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+COMPILER INVOKED BY: D:\Software\WorkSoftware\Keil5\C51\C51\BIN\C51.EXE User\main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Us
+                    -er;.\Hardware;.\Startup;.\Readme) DEBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
 
 line level    source
 
@@ -62,7 +62,7 @@ line level    source
   52          
   53          u8 seg_buf2;            //按键下LED控制 0b0011 1111 1为亮 0为灭
   54          u8 pos1 = 0;              //数码管段选
-C51 COMPILER V9.59.0.0   MAIN                                                              09/28/2024 17:30:12 PAGE 2   
+C51 COMPILER V9.57.0.0   MAIN                                                              09/28/2024 22:48:09 PAGE 2   
 
   55          u8 pos2 = 0;              //数码管段选
   56          
@@ -80,148 +80,182 @@ line level    source
   68   1        {
   69   2          Key_Proc();
   70   2          Disp_Proc();
-  71   2          LED1 = 0; 
-  72   2        }
-  73   1      } 
-  74          
-  75          //================中断函数=======================
-  76          void Timer1_Isr(void) interrupt 3   //1ms 中断一次
-  77          {
-  78   1        //本中断函数内全是赋值，没有运算，每次中断时间不会过长
-  79   1        if(++key_slow_down == 10) key_slow_down = 0;   //10ms扫描一次按键
-  80   1        if(++disp_slow_down == 200) disp_slow_down = 0;//200ms刷新一次数码管
-  81   1         
-  82   1      //--------------------1s定时器---------------------------
-  83   1        
-  84   1      
-  85   1      //--------------------外设控制---------------------------
-  86   1        
-  87   1        //按键长短按计时
-  88   1        if(key_tick > 0) key_tick--;  
-  89   1          
-  90   1        //软件延时
-  91   1        if(delay_tick > 0) delay_tick--;//延时函数 使用会卡住当前函数，但不影响其他功能
-  92   1          
-  93   1        //数码管段选刷新
-  94   1      //  Seg_Disp(seg_buf,pwm_index,seg_buf2,pos);
-  95   1        if(++pos1 > 3) pos1 = 0;
-  96   1        if(++pos2 > 3) pos2 = 0;
-  97   1      }
-  98          
-  99          //================按键逻辑函数=======================
- 100          void Key_Proc(void)        //Keystroke process function
- 101          {
- 102   1        if(key_slow_down) return;   //10ms进入一次此函数
- 103   1          key_slow_down = 1;
- 104   1          
- 105   1        key_value = Key_Scan(); //读取键值 强制消抖
- 106   1        key_down = key_value & (key_value ^ key_old); //下降沿
- 107   1        key_up = ~key_value & (key_value ^ key_old);  //上升沿
- 108   1        key_old = key_value;
- 109   1        
- 110   1        if(key_down)       //长按3秒
- 111   1          key_tick = 3000;
- 112   1        
- 113   1         //key_old键值 tick按下计数  long自锁，保证按键代码只触发一次
- 114   1        if(key_old && key_tick == 0 && keylong){
- 115   2          keylong = 0;    
- 116   2          if(key_old == 1){     //长按童锁键    
-C51 COMPILER V9.59.0.0   MAIN                                                              09/28/2024 17:30:12 PAGE 3   
+  71   2          LED1 = 0;
+  72   2          LED2 = 0;
+  73   2          LED3 = 0;   
+  74   2          
+  75   2          //ADIG1 = 1;
+  76   2          ADIG2 = 1;
+  77   2          ADIG3 = 1;
+  78   2          ADIG4 = 1;
+  79   2        
+  80   2          BDIG1 = 1;
+  81   2          BDIG2 = 1;
+  82   2          BDIG3 = 1;
+  83   2          BDIG4 = 1;
+  84   2        
+  85   2          LED1A = 0;
+  86   2          LED1B = 0;
+  87   2          LED1C = 0;
+  88   2          LED1D = 0;
+  89   2          LED1E = 0;
+  90   2          LED1F = 0;
+  91   2          LED1G = 0;
+  92   2          LED1DP = 0;
+  93   2        
+  94   2        LED2A = 0;
+  95   2        LED2B = 0;
+  96   2        LED2C = 0;
+  97   2        LED2D = 0;
+  98   2        LED2E = 0;
+  99   2        LED2F = 0;
+ 100   2        LED2G = 0;
+ 101   2        LED2DP = 0;
+ 102   2        }
+ 103   1      } 
+ 104          
+ 105          //================中断函数=======================
+ 106          void Timer1_Isr(void) interrupt 3   //1ms 中断一次
+ 107          {
+ 108   1        //本中断函数内全是赋值，没有运算，每次中断时间不会过长
+ 109   1        if(++key_slow_down == 10) key_slow_down = 0;   //10ms扫描一次按键
+ 110   1        if(++disp_slow_down == 200) disp_slow_down = 0;//200ms刷新一次数码管
+ 111   1         
+ 112   1      //--------------------1s定时器---------------------------
+ 113   1        
+ 114   1      
+ 115   1      //--------------------外设控制---------------------------
+ 116   1        
+C51 COMPILER V9.57.0.0   MAIN                                                              09/28/2024 22:48:09 PAGE 3   
 
- 117   3            //------按键1长按功能--------
- 118   3            
- 119   3            //------按键1长按功能--------       
- 120   3          }
- 121   2          if(key_old == 4){ //长按磁化键  
- 122   3            //------按键4长按功能--------
- 123   3      
- 124   3            //------按键4长按功能--------   
- 125   3          }
- 126   2        }
- 127   1        
- 128   1        if(key_up) //keydown-keyup顺序不能更改
- 129   1          keylong = 1;
- 130   1        
- 131   1        if(key_tick && key_sw){
- 132   2          switch(key_up)
- 133   2          {
- 134   3            case 1://锁键1
- 135   3            {     
- 136   4              LED1 ^=1;
- 137   4              break;
- 138   4            }
- 139   3            case 2://按键2
- 140   3            {
- 141   4              LED2 ^= 1;
- 142   4              break;
- 143   4            }
- 144   3            case 3://按键3
- 145   3            {
- 146   4              LED3 ^= 1;
- 147   4              break;
- 148   4            }
- 149   3            case 4://按键4
- 150   3            {             
- 151   4              break;                             
- 152   4            }                                    
- 153   3            default:                             
- 154   3              break;
+ 117   1        //按键长短按计时
+ 118   1        if(key_tick > 0) key_tick--;  
+ 119   1          
+ 120   1        //软件延时
+ 121   1        if(delay_tick > 0) delay_tick--;//延时函数 使用会卡住当前函数，但不影响其他功能
+ 122   1          
+ 123   1        //数码管段选刷新
+ 124   1      //  Seg_Disp(seg_buf,pwm_index,seg_buf2,pos);
+ 125   1        if(++pos1 > 3) pos1 = 0;
+ 126   1        if(++pos2 > 3) pos2 = 0;
+ 127   1      }
+ 128          
+ 129          //================按键逻辑函数=======================
+ 130          void Key_Proc(void)        //Keystroke process function
+ 131          {
+ 132   1        if(key_slow_down) return;   //10ms进入一次此函数
+ 133   1          key_slow_down = 1;
+ 134   1          
+ 135   1        key_value = Key_Scan(); //读取键值 强制消抖
+ 136   1        key_down = key_value & (key_value ^ key_old); //下降沿
+ 137   1        key_up = ~key_value & (key_value ^ key_old);  //上升沿
+ 138   1        key_old = key_value;
+ 139   1        
+ 140   1        if(key_down)       //长按3秒
+ 141   1          key_tick = 3000;
+ 142   1        
+ 143   1         //key_old键值 tick按下计数  long自锁，保证按键代码只触发一次
+ 144   1        if(key_old && key_tick == 0 && keylong){
+ 145   2          keylong = 0;    
+ 146   2          if(key_old == 1){     //长按童锁键    
+ 147   3            //------按键1长按功能--------
+ 148   3            
+ 149   3            //------按键1长按功能--------       
+ 150   3          }
+ 151   2          if(key_old == 4){ //长按磁化键  
+ 152   3            //------按键4长按功能--------
+ 153   3      
+ 154   3            //------按键4长按功能--------   
  155   3          }
  156   2        }
- 157   1          
- 158   1      }
- 159          
- 160          //================显示逻辑函数=======================
- 161          void Disp_Proc(void)       //LCD Dsiplay process function
- 162          {
- 163   1        if(disp_slow_down) return;   //200ms进入一次此函数(200ms刷新一次屏幕)
- 164   1          disp_slow_down = 1;
- 165   1        
- 166   1        
- 167   1      //  sprintf(seg_string,"%02d",(unsigned int)save_flag); //调试
- 168   1          
- 169   1      //  sprintf(seg_string,"%2d",(unsigned int)Mode);//显示模式 1=高原模式，出水85°，0=普通模式，出水93°
- 170   1        
- 171   1      //  Led_Trans(seg_string,seg_buf);
- 172   1          
- 173   1      }
- 174          
- 175          //================自定义函数=======================
- 176          
- 177          //定时器延时 会卡住当前函数，但不会影响整个代码
- 178          void Delay(unsigned int delay) 
-C51 COMPILER V9.59.0.0   MAIN                                                              09/28/2024 17:30:12 PAGE 4   
+ 157   1        
+ 158   1        if(key_up) //keydown-keyup顺序不能更改
+ 159   1          keylong = 1;
+ 160   1        
+ 161   1        if(key_tick && key_sw){
+ 162   2          switch(key_up)
+ 163   2          {
+ 164   3            case 1://锁键1
+ 165   3            {     
+ 166   4              ADIG1 ^=1;
+ 167   4              break;
+ 168   4            }
+ 169   3            case 2://按键2
+ 170   3            {
+ 171   4              LED2 ^= 1;
+ 172   4              break;
+ 173   4            }
+ 174   3            case 3://按键3
+ 175   3            {
+ 176   4              LED3 ^= 1;
+ 177   4              break;
+ 178   4            }
+C51 COMPILER V9.57.0.0   MAIN                                                              09/28/2024 22:48:09 PAGE 4   
 
- 179          {
- 180   1        delay_tick = delay;
- 181   1        while(delay_tick > 0);
- 182   1      }
- 183          
- 184          /*
- 185          tick: 蜂鸣器响的时间ms
- 186          */
- 187          void Buzzer_Ctrl(u16 tick)  
- 188          {
- 189   1        buzzer_tick = tick;
- 190   1      }
- 191          
- 192          void Peripheral_Init(void)//外设初始化函数
- 193          {
- 194   1        Buzzer_Ctrl(200);//上电短响200ms一次
- 195   1        seg_buf2 = 0x30;
- 196   1       
- 197   1      }
- 198          
+ 179   3            case 4://按键4
+ 180   3            {             
+ 181   4              break;                             
+ 182   4            }                                    
+ 183   3            default:                             
+ 184   3              break;
+ 185   3          }
+ 186   2        }
+ 187   1          
+ 188   1      }
+ 189          
+ 190          //================显示逻辑函数=======================
+ 191          void Disp_Proc(void)       //LCD Dsiplay process function
+ 192          {
+ 193   1        if(disp_slow_down) return;   //200ms进入一次此函数(200ms刷新一次屏幕)
+ 194   1          disp_slow_down = 1;
+ 195   1        
+ 196   1        
+ 197   1      //  sprintf(seg_string,"%02d",(unsigned int)save_flag); //调试
+ 198   1          
+ 199   1      //  sprintf(seg_string,"%2d",(unsigned int)Mode);//显示模式 1=高原模式，出水85°，0=普通模式，出水93°
+ 200   1        
+ 201   1      //  Led_Trans(seg_string,seg_buf);
+ 202   1          
+ 203   1        
+ 204   1        
+ 205   1      }
+ 206          
+ 207          //================自定义函数=======================
+ 208          
+ 209          //定时器延时 会卡住当前函数，但不会影响整个代码
+ 210          void Delay(unsigned int delay) 
+ 211          {
+ 212   1        delay_tick = delay;
+ 213   1        while(delay_tick > 0);
+ 214   1      }
+ 215          
+ 216          /*
+ 217          tick: 蜂鸣器响的时间ms
+ 218          */
+ 219          void Buzzer_Ctrl(u16 tick)  
+ 220          {
+ 221   1        buzzer_tick = tick;
+ 222   1      }
+ 223          
+ 224          void Peripheral_Init(void)//外设初始化函数
+ 225          {
+ 226   1        Buzzer_Ctrl(200);//上电短响200ms一次
+ 227   1        seg_buf2 = 0x30;
+ 228   1       
+ 229   1      }
+ 230          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    288    ----
+   CODE SIZE        =    330    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
    DATA SIZE        =     21    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =      2    ----
+C51 COMPILER V9.57.0.0   MAIN                                                              09/28/2024 22:48:09 PAGE 5   
+
 END OF MODULE INFORMATION.
 
 

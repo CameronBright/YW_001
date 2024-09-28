@@ -68,7 +68,37 @@ void main(){
 	{
 		Key_Proc();
 		Disp_Proc();
-		LED1 = 0; 
+		LED1 = 0;
+		LED2 = 0;
+		LED3 = 0;		
+		
+		//ADIG1 = 1;
+		ADIG2 = 1;
+		ADIG3 = 1;
+		ADIG4 = 1;
+	
+		BDIG1 = 1;
+		BDIG2 = 1;
+		BDIG3 = 1;
+		BDIG4 = 1;
+	
+		LED1A = 0;
+		LED1B = 0;
+		LED1C = 0;
+		LED1D = 0;
+		LED1E = 0;
+		LED1F = 0;
+		LED1G = 0;
+		LED1DP = 0;
+	
+	LED2A = 0;
+	LED2B = 0;
+	LED2C = 0;
+	LED2D = 0;
+	LED2E = 0;
+	LED2F = 0;
+	LED2G = 0;
+	LED2DP = 0;
 	}
 } 
 
@@ -133,7 +163,7 @@ void Key_Proc(void)   	   //Keystroke process function
 		{
 			case 1://锁键1
 			{ 		
-				LED1 ^=1;
+				ADIG1 ^=1;
 				break;
 			}
 			case 2://按键2
@@ -170,6 +200,8 @@ void Disp_Proc(void)  	   //LCD Dsiplay process function
 	
 //	Led_Trans(seg_string,seg_buf);
 		
+	
+	
 }
 
 //================自定义函数=======================

@@ -1,0 +1,31 @@
+A51 MACRO ASSEMBLER  ISR                                                                  08/17/2024 09:33:44 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\ISR.obj
+ASSEMBLER INVOKED BY: D:\Worksoftware\Keil\ARM\C51\BIN\A51.EXE Startup\ISR.ASM SET(SMALL) DEBUG PRINT(.\Listings\ISR.lst
+                      ) OBJECT(.\Objects\ISR.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+----                   1             CSEG AT 012BH  ;P0 口中断入口地址
+012B 8000              2             JMP P0INT_ISR
+                       3             
+012D                   4     P0INT_ISR:
+012D 016B              5             JMP 006BH ;借用 13 号中断的入口地址-
+                       6             END
+A51 MACRO ASSEMBLER  ISR                                                                  08/17/2024 09:33:44 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+P0INT_ISR. . . . .  C ADDR   012DH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

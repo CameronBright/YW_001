@@ -1,0 +1,545 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              08/17/2024 17:29:09 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Worksoftware\Keil\ARM\C51\BIN\C51.EXE User\main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\User;.\Hardw
+                    -are;.\Startup;.\Readme) DEBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          /*
+   2          
+   3          Version: 1.9.3
+   4          Check out the Readme.txt for more details
+   5           
+   6          */
+   7           
+   8          //系统库
+   9          #include "main.h"
+  10          #include <stdio.h>
+  11          
+  12          //外设库
+  13          #include "gpio.h"
+  14          #include "timer.h"
+  15          #include "key.h"
+  16          #include "seg.h"
+  17          #include "eeprom.h"
+  18          #include "config.h"
+  19          
+  20          //-----------功能选择区-----------
+  21          #define BUZZER_SWITCH  1  //蜂鸣器 0关闭 1开启
+  22          #define SOFT_RESET     0  //每24小时软件复位一次,初始化所有除了EEPROM外的变量 0关闭 1开启
+  23          
+  24          #define SOFT_RESET_DLTIME  10 //按照当前烧录时间来修改,以确保每次软复位的时间都固定在晚上12点
+  25                                       //如当前是下午15点烧录,应设置为 15
+  26          //程序执行函数
+  27          void Key_Proc(void);       //Keystroke process function
+  28          void Disp_Proc(void);      //LCD Dsiplay process function
+  29          
+  30          //自定义功能函数 
+  31          void Delay(unsigned int delay); //定时器延时 会卡住当前函数，但不会影响整个代码
+  32          void Buzzer_3time(bit sw);
+  33          void Buzzer_Ctrl(u16 tick);//蜂鸣器控制函数
+  34          void Peripheral_Init(void);//外设初始化函数
+  35          
+  36          //----------------可能需要修改的变量-------------------------------------
+  37          
+  38          //磁化电机挡位切换,可在此处修改不同挡位的占空比.
+  39          u8 pwm_duty[4] = {10,4,3,2}; //磁化挡位占空比选择 1档:40% 2档:30% 3档:20% 停止:10%
+  40          u8 pwm_index = 0;//占空比选择函数
+  41          
+  42          bit WSWITCH = 0; //出水口开关 =1出水 =0关水
+  43          
+  44          //刷新计数,按键10ms扫描一次,数码管200ms刷新一次
+  45          u16 key_slow_down = 0; //按键刷新计数
+  46          u16 disp_slow_down = 0; //LCD刷新计数
+  47          
+  48          u16 key_tick; //long key press count
+  49          bit key_sw = 1;
+  50          bit keylong = 1;
+  51          
+  52          #if SOFT_RESET  
+              u16 reset_tick_min = SOFT_RESET_DLTIME*60;    //调整软件复位烧录时间
+              u16 reset_tickwait = 0;   //如果在工作状态就记下超出的时间
+C51 COMPILER V9.59.0.0   MAIN                                                              08/17/2024 17:29:09 PAGE 2   
+
+              u8 reset_tick_sec = 0;    //软件复位分钟计数
+              #endif
+  57          
+  58          u8 mode_sw_tick;        //上电一分钟内可以切换高原模式计时
+  59          bit mode_sw;            //高原模式可切换标志位,=1时可以切换模式
+  60          bit mode_sw_tick_sw;    //开始计时标志位
+  61          
+  62          u8 key_value = 0;       //按键值
+  63          u8 key_down;            //按键下降沿
+  64          u8 key_up;              //上升沿
+  65          u8 key_old;             //上次的按键值
+  66          
+  67          u16 delay_tick;         //软件延时计数
+  68          u16 buzzer_tick;        //蜂鸣器短响计数
+  69          bit Buzzer3timeSW = 0;  //蜂鸣器连响三次
+  70          
+  71          u16 countdown = 60;     //倒计时60min
+  72          u16 sec_tick;           //秒倒计时
+  73          u16 min_tick;           //分钟计时
+  74          bit magnetize_tick_sw;  //磁化水倒计时开关
+  75          u8 WSWITCH_tick = 0;    //开水两分钟后自动关水计数
+  76          bit temperature = 0;    //出水温度
+  77          
+  78          u16 valve_delay;        //继电器延迟计数
+  79          u16 hot_delay;          //开热水延迟开水
+  80          u16 hot_delaytime = 2000;//热水出水延迟时间ms
+  81          bit hot_delaysw;
+  82          
+  83          u16 flow_tick;          //流量计延迟关水
+  84          bit save_flag = 1;      //缺水保护标志位
+  85          u16 save_flagtick;
+  86          
+  87          xdata u32 freq = 0;               //流量计读取回来的频率
+  88          u16 freq_tick;          //频率计数
+  89          u16 freq_timetick;      //频率测量周期
+  90          u16 valve_tick;         //电磁阀延迟关闭计数
+  91          u16 pwm_tick;           //pwm计数
+  92          
+  93          bit magnetize_sw = 0;   //磁化水开关 1开 0关
+  94          
+  95          char seg_string[2];     //数码管显示字符串
+  96          char seg_buf[2];        //数码管显示缓冲区
+  97          bit mode_disp;          //模式显示,显示1时高原模式,显示0时普通模式
+  98          u16 mode_disptick;
+  99          
+ 100          u8 seg_buf2;            //按键下LED控制 0b0011 1111 1为亮 0为灭
+ 101          u8 pos = 0;             //数码管段选
+ 102          u8 mode_buf = 0;        //模式切换eeprom缓冲区
+ 103          
+ 104          void main(){
+ 105   1        GPIO_Init();      //引脚初始化
+ 106   1        EXTI_Init();      //外部中断配置
+ 107   1        Timer1_Init();    //定时器初始化
+ 108   1        EA = 1;           //打开总中断
+ 109   1        Config_Init();    //初始化配置
+ 110   1        Peripheral_Init();//外设初始状态
+ 111   1        
+ 112   1        while(1)
+ 113   1        {
+ 114   2          Key_Proc();
+ 115   2          Disp_Proc();
+ 116   2        }
+C51 COMPILER V9.59.0.0   MAIN                                                              08/17/2024 17:29:09 PAGE 3   
+
+ 117   1      } 
+ 118          
+ 119          //================中断函数=======================
+ 120          void Timer1_Isr(void) interrupt 3   //1ms 中断一次
+ 121          {
+ 122   1        //本中断函数内全是赋值，没有运算，每次中断时间不会过长
+ 123   1        if(++key_slow_down == 10) key_slow_down = 0;   //10ms扫描一次按键
+ 124   1        if(++disp_slow_down == 200) disp_slow_down = 0;//200ms刷新一次数码管
+ 125   1         
+ 126   1      //--------------------1s定时器---------------------------
+ 127   1        if(++sec_tick >= 1000){
+ 128   2          sec_tick = 0;
+ 129   2          
+ 130   2          //磁化时间显示控制
+ 131   2          if(magnetize_tick_sw){    
+ 132   3            if(++min_tick >= 60)
+ 133   3            {
+ 134   4              min_tick = 0;
+ 135   4              if(--countdown == 0){
+ 136   5                magnetize_tick_sw = 0;//计数关闭
+ 137   5                countdown = 60;//倒计时复位为60
+ 138   5                pwm_index = 0;                
+ 139   5                seg_buf2 &= ~0x01;//磁化LED关
+ 140   5                CHLED = 1;       //灯圈关
+ 141   5              }
+ 142   4            }
+ 143   3          }else 
+ 144   2            min_tick = 0;
+ 145   2          
+ 146   2          //开水2min后自动关水    
+ 147   2          if(WSWITCH){
+ 148   3            if(++WSWITCH_tick >= 120){ //120s
+ 149   4              WSWITCH_tick = 0;
+ 150   4              WSWITCH = 0;  //关水
+ 151   4              Valve = 0;    //关电磁阀
+ 152   4              seg_buf2 &= ~0x04; //关开水LED
+ 153   4              seg_buf2 &= ~0x02; //关冷水LED
+ 154   4              Buzzer_Ctrl(200);   //蜂鸣器响200ms
+ 155   4            }
+ 156   3          }
+ 157   2          else 
+ 158   2            WSWITCH_tick = 0;
+ 159   2          
+ 160   2        #if SOFT_RESET  
+                  //24hour后自动复位初始化所有标志位和变量,提高工程稳定性
+                  if(++reset_tick_sec >= 60){
+                    reset_tick_min++;
+                    reset_tick_sec = 0;         //分钟计数清零
+                    if(reset_tick_min >= 1440){ //60min*24h 每24h复位一次 
+                        if(WSWITCH == 0 && magnetize_tick_sw == 0){//不在出水状态的时候and不在磁化倒计时的时候
+                          IAP_CONTR = 0x60;     //单片机软复位寄存器,初始化所有变量
+                          reset_tick_min = 0;   //计数器清零
+                          reset_tick_min = reset_tickwait;//保证每次复位都是在固定的时间
+                          reset_tickwait = 0;   //超出量
+                        }else{
+                          reset_tickwait++;     //超出量
+                        }
+                    }
+                  }
+                #endif
+ 177   2          
+ 178   2          //开机1分钟内可以切换高原模式和普通模式
+C51 COMPILER V9.59.0.0   MAIN                                                              08/17/2024 17:29:09 PAGE 4   
+
+ 179   2          if(!mode_sw_tick_sw){
+ 180   3            mode_sw = 1;//=1时可以切换高原模式
+ 181   3            mode_sw_tick++; 
+ 182   3            if(mode_sw_tick >= 60){//60s计数
+ 183   4              mode_sw_tick = 0;
+ 184   4              mode_sw_tick_sw = 1;
+ 185   4              mode_sw = 0;//=0时不允许切换模式
+ 186   4            }
+ 187   3          }
+ 188   2          
+ 189   2      
+ 190   2        }
+ 191   1      
+ 192   1      //--------------------1s定时器---------------------------
+ 193   1      //--------------------外设控制---------------------------
+ 194   1        
+ 195   1        //按键长短按计时
+ 196   1        if(key_tick > 0) key_tick--;  
+ 197   1        
+ 198   1        //浮点数运算 影响不大 下次优化时尽量放在中断外
+ 199   1        //频率测量
+ 200   1        if(++freq_timetick > 100){
+ 201   2          freq_timetick = 0;
+ 202   2          freq = ((u32)freq_tick / 2.0)*10.0;//单位Hz
+ 203   2          freq_tick = 0;
+ 204   2        }
+ 205   1        
+ 206   1        //刚按按键5s不检测流量计数
+ 207   1        if(save_flag == 0){
+ 208   2          if(++save_flagtick >= 5000){
+ 209   3            save_flagtick = 0;
+ 210   3            save_flag = 1;
+ 211   3          }
+ 212   2        }else 
+ 213   1          save_flagtick = 0;
+ 214   1        
+ 215   1        //流量计检测到如果流量低于某个值就关水，防干烧，刚开水两秒不检测
+ 216   1        if(WSWITCH && freq <= 5 && save_flag){
+ 217   2          if(++flow_tick > 100 && freq <= 5){
+ 218   3            flow_tick = 0;
+ 219   3            WSWITCH = 0;
+ 220   3            Valve = 0;
+ 221   3            hot_delaysw = 0;
+ 222   3            hot_delaytime = 2000;//触发保护后下一次出冷水时间调整为2s
+ 223   3            seg_buf2 &= ~0x04; //关开水LED
+ 224   3            seg_buf2 &= ~0x02; //关冷水LED
+ 225   3            Buzzer3timeSW = 1;
+ 226   3          }
+ 227   2        }else 
+ 228   1          flow_tick = 0;
+ 229   1        
+ 230   1        //每次开热水先开2秒冷水,并且有流量才给出热水
+ 231   1        //触发缺水保护之后先开3秒冷水
+ 232   1        if(hot_delaysw){
+ 233   2            Valve = 1;
+ 234   2            hot_delay++;
+ 235   2          
+ 236   2            if((hot_delay >= hot_delaytime) && (hot_delay < (hot_delaytime+100)))
+ 237   2              WSWITCH = 0;  //关水 要先关水并延时才能控制温度
+ 238   2            else if(hot_delay >= hot_delaytime+100){
+ 239   3              if(freq >= 3){
+ 240   4                hot_delay = 0;       //计数清零
+C51 COMPILER V9.59.0.0   MAIN                                                              08/17/2024 17:29:09 PAGE 5   
+
+ 241   4                hot_delaytime = 2000;//出冷水时间调整为1s
+ 242   4                hot_delaysw = 0;
+ 243   4                WSWITCH = 1;  //开水
+ 244   4                temperature = HOT;
+ 245   4              }else{
+ 246   4                hot_delay = 0;//计数清零
+ 247   4                hot_delaysw = 0;
+ 248   4                hot_delaytime = 3000;//出冷水时间调整为3s
+ 249   4                WSWITCH = 0;  //关水
+ 250   4                Valve = 0;
+ 251   4                seg_buf2 &= ~0x04; //关开水LED
+ 252   4                seg_buf2 &= ~0x02; //关冷水LED
+ 253   4                //temperature = HOT;
+ 254   4                Buzzer_Ctrl(1000);//蜂鸣器长响
+ 255   4              }
+ 256   3              
+ 257   3            }
+ 258   2        }else 
+ 259   1          hot_delay = 0;
+ 260   1        
+ 261   1        
+ 262   1          
+ 263   1        //磁化电机pwm
+ 264   1        if(pwm_index){
+ 265   2          if(++pwm_tick >= 10) pwm_tick = 0;//软件模拟PWM（stc8c用pca中断pwm 那还不如用软件模拟）
+ 266   2          if(pwm_tick < pwm_duty[pwm_index]) PWM = 1;
+ 267   2          else  PWM = 0;
+ 268   2        }
+ 269   1        else 
+ 270   1          PWM = 1;
+ 271   1        
+ 272   1        //软件延时
+ 273   1        if(delay_tick > 0) delay_tick--;//延时函数 使用会卡住当前函数，但不影响其他功能
+ 274   1        
+ 275   1        
+ 276   1        //蜂鸣器定时器
+ 277   1        #if BUZZER_SWITCH     
+ 278   1        if(buzzer_tick > 0){    //蜂鸣器短响时间计数        
+ 279   2          buzzer_tick--;
+ 280   2          Buzzer = 0;
+ 281   2        }else
+ 282   1          Buzzer = 1;
+ 283   1        #endif
+ 284   1        
+ 285   1        //数码管段选刷新
+ 286   1        Seg_Disp(seg_buf,pwm_index,seg_buf2,pos);
+ 287   1        if(++pos > 4) pos = 0;
+ 288   1        
+ 289   1        //电磁阀延迟关闭和开启
+ 290   1        if(WSWITCH){
+ 291   2          if(++valve_delay == 300){
+ 292   3            valve_delay = 0;
+ 293   3            Valve = 1;
+ 294   3          }
+ 295   2        }else{
+ 296   2          if(++valve_delay == 50){
+ 297   3            valve_delay = 0;
+ 298   3            Valve = 0;
+ 299   3          }
+ 300   2        }
+ 301   1      
+ 302   1        //开关热水冷水
+C51 COMPILER V9.59.0.0   MAIN                                                              08/17/2024 17:29:09 PAGE 6   
+
+ 303   1        Faucet_Switch(temperature,WSWITCH);
+ 304   1        
+ 305   1        //高原模式和普通模式切换
+ 306   1        Mode = !mode_buf;
+ 307   1        
+ 308   1        //切换高原模式时显示一秒
+ 309   1        if(mode_disp){
+ 310   2          if(++mode_disptick >= 3000){
+ 311   3            mode_disptick = 0;
+ 312   3            mode_disp = 0;
+ 313   3          }
+ 314   2        }else 
+ 315   1          mode_disptick = 0;
+ 316   1          
+ 317   1          
+ 318   1      }
+ 319          
+ 320          //================按键逻辑函数=======================
+ 321          void Key_Proc(void)        //Keystroke process function
+ 322          {
+ 323   1        if(key_slow_down) return;   //10ms进入一次此函数
+ 324   1          key_slow_down = 1;
+ 325   1          
+ 326   1        key_value = Key_Scan(); //读取键值 强制消抖
+ 327   1        key_down = key_value & (key_value ^ key_old); //下降沿
+ 328   1        key_up = ~key_value & (key_value ^ key_old);  //上升沿
+ 329   1        key_old = key_value;
+ 330   1        
+ 331   1        if(key_down)       //长按2秒
+ 332   1          key_tick = 3000;
+ 333   1        
+ 334   1         //key_old键值 tick按下计数  long自锁，保证按键代码只触发一次
+ 335   1        if(key_old && key_tick == 0 && keylong){
+ 336   2          keylong = 0;    
+ 337   2          if(key_old == 1){     //长按童锁键    
+ 338   3            //------按键1长按功能--------
+ 339   3            WSWITCH = 0;        //出水开关关闭
+ 340   3            key_sw ^= 1;        //=1时其他按键正常工作，=0时其他按键无法按下
+ 341   3            seg_buf2 ^= 0x08;   //童锁LED
+ 342   3            seg_buf2 &= ~0x04; //关开水LED
+ 343   3            seg_buf2 &= ~0x02; //关冷水LED
+ 344   3            Buzzer_Ctrl(200);   //蜂鸣器响200ms   
+ 345   3            
+ 346   3            //------按键1长按功能--------       
+ 347   3          }
+ 348   2          if(key_old == 4 && key_sw && mode_sw){ //长按磁化键 
+ 349   3            //------按键4长按功能--------
+ 350   3            mode_buf = !mode_buf;//长按磁化键更换高原模式
+ 351   3            
+ 352   3            mode_disp = 1; //数码管显示一下当前模式
+ 353   3            IapErase(IAP_ADDRESS);
+ 354   3            IapProgram(IAP_ADDRESS,mode_buf);
+ 355   3            Buzzer3timeSW = 1; //蜂鸣器响三下
+ 356   3      
+ 357   3            //------按键4长按功能--------   
+ 358   3          }
+ 359   2        }
+ 360   1        
+ 361   1        if(key_up) //keydown-keyup顺序不能更改
+ 362   1          keylong = 1;
+ 363   1        
+ 364   1        if(key_tick && key_sw){
+C51 COMPILER V9.59.0.0   MAIN                                                              08/17/2024 17:29:09 PAGE 7   
+
+ 365   2          switch(key_up)
+ 366   2          {
+ 367   3            case 1://儿童锁键
+ 368   3            {     
+ 369   4              break;
+ 370   4            }
+ 371   3            case 2://热水按键
+ 372   3            {
+ 373   4              WSWITCH ^= 1; //开关水
+ 374   4              save_flagtick = 0;
+ 375   4              save_flag = 0;//先不检测流量
+ 376   4              //Valve = WSWITCH; //电磁阀开关
+ 377   4              
+ 378   4              temperature = COLD;
+ 379   4              hot_delaysw = WSWITCH;
+ 380   4              
+ 381   4              seg_buf2 &= ~0x02; //关冷水LED
+ 382   4              Buzzer_Ctrl(200);//蜂鸣器响200ms
+ 383   4              
+ 384   4              if(WSWITCH)
+ 385   4                seg_buf2 |= 0x04; //开水LED开
+ 386   4              else
+ 387   4                seg_buf2 &= ~0x04; //关开水LED
+ 388   4              break;
+ 389   4            }
+ 390   3            case 3://冷水按键
+ 391   3            {
+ 392   4              WSWITCH ^= 1;
+ 393   4              save_flagtick = 0;
+ 394   4              save_flag = 0;//先不检测流量
+ 395   4              //Valve = WSWITCH; //电磁阀开关
+ 396   4              hot_delaysw = 0;
+ 397   4              temperature = COLD;
+ 398   4              seg_buf2 &= ~0x04; //关开水LED
+ 399   4              Buzzer_Ctrl(200);//蜂鸣器响200ms
+ 400   4              
+ 401   4              if(WSWITCH)
+ 402   4                seg_buf2 |= 0x02; //冷水LED开
+ 403   4              else
+ 404   4                seg_buf2 &= ~0x02; //关冷水LED
+ 405   4              break;
+ 406   4            }
+ 407   3            case 4://磁化按键
+ 408   3            {
+ 409   4              magnetize_tick_sw = 1;//开始倒计时
+ 410   4              CHLED = 0;       //灯圈开
+ 411   4              seg_buf2 |= 0x01;//磁化LED开
+ 412   4              Buzzer_Ctrl(200);//蜂鸣器响200ms 
+ 413   4              if(++pwm_index > 3){              //磁化强度选择 index = 0[Uenabled]
+ 414   5                magnetize_tick_sw = 0;          //                     1[duty30%]
+ 415   5                pwm_index = 0;                  //                     2[duty20%]           
+ 416   5                seg_buf2 &= ~0x01;//磁化LED关
+ 417   5                CHLED = 1;       //灯圈关
+ 418   5                countdown = 60;//倒计时复位为60   
+ 419   5              }                                 //                     3[duty10%]
+ 420   4              break;                             
+ 421   4            }                                    
+ 422   3            default:                             
+ 423   3              break;
+ 424   3          }
+ 425   2        }
+ 426   1        
+C51 COMPILER V9.59.0.0   MAIN                                                              08/17/2024 17:29:09 PAGE 8   
+
+ 427   1        Buzzer_3time(Buzzer3timeSW);
+ 428   1        
+ 429   1      }
+ 430          
+ 431          //================显示逻辑函数=======================
+ 432          void Disp_Proc(void)       //LCD Dsiplay process function
+ 433          {
+ 434   1        if(disp_slow_down) return;   //200ms进入一次此函数(200ms刷新一次屏幕)
+ 435   1          disp_slow_down = 1;
+ 436   1        
+ 437   1        
+ 438   1      //  sprintf(seg_string,"%02d",(unsigned int)save_flag); //调试
+ 439   1        if(!mode_disp)
+ 440   1          sprintf(seg_string,"%2d",countdown);//显示磁化倒计时
+ 441   1        else  
+ 442   1          sprintf(seg_string,"%2d",(unsigned int)Mode);//显示模式 1=高原模式，出水85°，0=普通模式，出水93°
+ 443   1        
+ 444   1        Led_Trans(seg_string,seg_buf);
+ 445   1          
+ 446   1      }
+ 447          
+ 448          //================外部中断函数=======================
+ 449          void common_isr() interrupt 13
+ 450          {
+ 451   1        u8 psw2_st;
+ 452   1        u8 intf;
+ 453   1        psw2_st = P_SW2;
+ 454   1        P_SW2 |= 0x80;
+ 455   1        intf = P0INTF;
+ 456   1        if (intf)
+ 457   1        {
+ 458   2          P0INTF = 0x00;    
+ 459   2          if (intf & 0x10)
+ 460   2          {
+ 461   3            //P0.4 口中断
+ 462   3            freq_tick += 1;
+ 463   3          }
+ 464   2          
+ 465   2          }
+ 466   1          P_SW2 = psw2_st;
+ 467   1      }
+ 468          
+ 469          //================自定义函数=======================
+ 470          
+ 471          //定时器延时 会卡住当前函数，但不会影响整个代码
+ 472          void Delay(unsigned int delay) 
+ 473          {
+ 474   1        delay_tick = delay;
+ 475   1        while(delay_tick > 0);
+ 476   1      }
+ 477          
+ 478          /*
+ 479          tick: 蜂鸣器响的时间ms
+ 480          */
+ 481          void Buzzer_Ctrl(u16 tick)  
+ 482          {
+ 483   1        buzzer_tick = tick;
+ 484   1      }
+ 485          
+ 486          void Buzzer_3time(bit sw)
+ 487          {
+ 488   1        if(sw){
+C51 COMPILER V9.59.0.0   MAIN                                                              08/17/2024 17:29:09 PAGE 9   
+
+ 489   2          Buzzer_Ctrl(100);
+ 490   2          Delay(200);
+ 491   2          Buzzer_Ctrl(100);
+ 492   2          Delay(200);
+ 493   2          Buzzer_Ctrl(100);
+ 494   2          Buzzer3timeSW = 0;
+ 495   2        }   
+ 496   1      }
+ 497          
+ 498          void Peripheral_Init(void)//外设初始化函数
+ 499          {
+ 500   1        Buzzer_Ctrl(200);//上电短响200ms一次
+ 501   1        seg_buf2 = 0x30;
+ 502   1       
+ 503   1        mode_buf = IapRead(IAP_ADDRESS); //读取EEPROM的值，模式默认为普通模式 0为普通模式 1为高原模式
+ 504   1      }
+ 505          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1376    ----
+   CONSTANT SIZE    =      4    ----
+   XDATA SIZE       =      4    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     54    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =     12       1
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
