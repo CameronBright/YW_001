@@ -1,0 +1,13 @@
+C51 COMPILER V9.59.0.0   PCA_PWM                                                           07/24/2024 14:23:41 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE PCA_PWM
+OBJECT MODULE PLACED IN .\Objects\PCA_PWM.obj
+COMPILER INVOKED BY: D:\Worksoftware\Keil\ARM\C51\BIN\C51.EXE Hardware\PCA_PWM.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\User;
+                    -.\Hardware) DEBUG OBJECTEXTEND PRINT(.\Listings\PCA_PWM.lst) TABS(2) OBJECT(.\Objects\PCA_PWM.obj)
+
+line level    source
+
+*** ERROR C318 OF Hardware\PCA_PWM.c: can't open file 'Hardware\PCA_PWM.c'
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  1 ERROR(S)

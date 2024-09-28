@@ -1,0 +1,177 @@
+C51 COMPILER V9.59.0.0   SEG                                                               09/27/2024 17:14:03 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE SEG
+OBJECT MODULE PLACED IN .\Objects\seg.obj
+COMPILER INVOKED BY: D:\Worksoftware\Keil\ARM\C51\BIN\C51.EXE Hardware\seg.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\User;.\Ha
+                    -rdware;.\Startup;.\Readme) DEBUG OBJECTEXTEND PRINT(.\Listings\seg.lst) TABS(2) OBJECT(.\Objects\seg.obj)
+
+line level    source
+
+   1          #include "seg.h"
+   2          
+   3          /* 
+   4          ======================================================================================
+   5          Function:
+   6          此函数将*seg_string字符串中每一位的内容转换成数码管显示的段码
+   7          例如：char seg_string[2] = {0,1}; //要显示0和1
+   8                char seg_buf[2] = {0,0};    //缓冲区
+   9                
+  10                Led_Trans(seg_string,seg_buf);//转换
+  11                
+  12                //转换结果
+  13                seg_string[2] = {0,1};
+  14                seg_buf[2] = {0xFC,0x60};
+  15                              0xFC数码管表示为0，0x60为1
+  16          ======================================================================================  
+  17          */
+  18          void Led_Trans(unsigned char *seg_string,unsigned char *seg_buf)
+  19          {
+  20   1        unsigned char i,j = 0;
+  21   1        unsigned char temp;
+  22   1        
+  23   1        for (i=0;i<2;i++,j++)
+  24   1        {
+  25   2          switch(seg_string[j]){
+  26   3            case '0': temp = 0xFC; break;
+  27   3            case '1': temp = 0x60; break;
+  28   3            case '2': temp = 0xDA; break;
+  29   3            case '3': temp = 0xF2; break;
+  30   3            case '4': temp = 0x66; break;
+  31   3            case '5': temp = 0xB6; break;
+  32   3            case '6': temp = 0xBE; break;
+  33   3            case '7': temp = 0xE0; break;
+  34   3            case '8': temp = 0xFF; break;
+  35   3            case '9': temp = 0xF6; break;
+  36   3            default:  temp = 0xFC; break;
+  37   3          }
+  38   2          seg_buf[i] = temp;
+  39   2        }
+  40   1        
+  41   1      }
+  42          
+  43          /*
+  44          ======================================================================================
+  45          多个数码管和LED控制函数,适用于引脚顺序不连贯,多个数码管同时控制
+  46          *seg_buf:数码管段选 例seg_buf[2] = {0xFC,0x60};0xFC数码管表示为0，0x60为1
+  47          seg_buf1:磁化强度数码管显示选择，=0时磁化强度显示0，=1时磁化强度显示1.选择范围只有0-3
+  48          seg_buf2:按键下方的LED显示开关，按位判断，可精确控制每一位LED ，并方便移植
+  49          表格：
+  50          seg_buf2 = 2b: 0 0 1  1   1  1  1  1     =1开 =0关
+  51                            磁  磁 童 开 冷 磁
+  52                            化  化 锁 水 水 化
+  53                            时  强
+  54                            间  度
+C51 COMPILER V9.59.0.0   SEG                                                               09/27/2024 17:14:03 PAGE 2   
+
+  55          ======================================================================================
+  56          */
+  57          
+  58          void Seg_Disp(unsigned char *seg_buf,unsigned char seg_buf1,unsigned char seg_buf2, unsigned char pos)
+  59          {
+  60   1        unsigned char seg_string;
+  61   1        
+  62   1        switch(pos){  
+  63   2          case 0:{    
+  64   3            DIG1 = 0;
+  65   3            DIG2 = DIG3 = COM1 = COM2 = 1;    
+  66   3            seg_string = seg_buf[pos];  
+  67   3            break;
+  68   3          }
+  69   2          case 1:{
+  70   3            DIG2 = 0;
+  71   3            DIG1 = DIG3 = COM1 = COM2 = 1;
+  72   3            seg_string = seg_buf[pos];  
+  73   3            break;
+  74   3          }
+  75   2          case 2:{
+  76   3            DIG3 = 0;
+  77   3            DIG1 = DIG2 = COM1 = COM2 = 1;
+  78   3            switch(seg_buf1){
+  79   4              case 0:
+  80   4                seg_string = 0xFC; //0
+  81   4                break;
+  82   4              case 1:
+  83   4                seg_string = 0x60; //1
+  84   4                break;
+  85   4              case 2:
+  86   4                seg_string = 0xDA; //2
+  87   4                break;
+  88   4              case 3:
+  89   4                seg_string = 0xF2; //3
+  90   4                break;
+  91   4              default: break;
+  92   4            }
+  93   3            break;
+  94   3          }
+  95   2          case 3:{
+  96   3            COM1 = 0;
+  97   3            DIG1 = DIG2 = DIG3 = COM2 = 1;
+  98   3            
+  99   3            if(((seg_buf2 >> 5) & 0x01))
+ 100   3              seg_string = 0xE0; //磁化时间LED
+ 101   3            else 
+ 102   3              seg_string = 0x00; //磁化时间LED
+ 103   3            
+ 104   3            if(((seg_buf2 >> 3) & 0x01))
+ 105   3              seg_string |= 0x18; //童锁LED
+ 106   3            else 
+ 107   3              seg_string &= ~0x18; //童锁LED
+ 108   3            
+ 109   3            if(((seg_buf2 >> 2) & 0x01))
+ 110   3              seg_string |= 0x06; //开水键LED
+ 111   3            else 
+ 112   3              seg_string &= ~0x06; //开水键LED
+ 113   3              
+ 114   3            break;
+ 115   3          }
+ 116   2          case 4:{
+C51 COMPILER V9.59.0.0   SEG                                                               09/27/2024 17:14:03 PAGE 3   
+
+ 117   3            COM2 = 0;
+ 118   3            DIG1 = DIG2 = DIG3 = COM1 = 1;
+ 119   3            
+ 120   3            if(((seg_buf2 >> 4) & 0x01))
+ 121   3              seg_string = 0xE0; //磁化强度LED
+ 122   3            else 
+ 123   3              seg_string = 0x00; //磁化强度LED
+ 124   3            
+ 125   3            if(((seg_buf2 >> 1) & 0x01))
+ 126   3              seg_string |= 0x18; //冷水LED
+ 127   3            else 
+ 128   3              seg_string &= ~0x18; //冷水LED
+ 129   3            
+ 130   3            if(seg_buf2 & 0x01)
+ 131   3              seg_string |= 0x06; //磁化LED
+ 132   3            else 
+ 133   3              seg_string &= ~0x06; //磁化LED
+ 134   3            
+ 135   3            break;
+ 136   3          }
+ 137   2          default: break;
+ 138   2        }
+ 139   1        
+ 140   1        
+ 141   1        LEDA = seg_string >> 7;
+ 142   1        LEDB = seg_string >> 6 & 0x01;
+ 143   1        LEDC = seg_string >> 5 & 0x01;
+ 144   1        LEDD = seg_string >> 4 & 0x01;
+ 145   1        LEDE = seg_string >> 3 & 0x01;
+ 146   1        LEDF = seg_string >> 2 & 0x01;
+ 147   1        LEDG = seg_string >> 1 & 0x01;
+ 148   1      }
+ 149          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    461    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      16
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
