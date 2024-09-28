@@ -1,0 +1,6 @@
+Change Component Designator: OldDesignator=Q? NewDesignator=Q5
+Change Component Designator: OldDesignator=Q? NewDesignator=Q6
+Added Member To Class: ClassName=YW_001 Member=Component C? 1000uF25V
+Added Member To Class: ClassName=YW_001 Member=Component C? 102
+Added Member To Class: ClassName=YW_001 Member=Component Q5 SW8050
+Added Room: Name=YW_001

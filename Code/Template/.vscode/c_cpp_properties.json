@@ -1,0 +1,40 @@
+{
+    "configurations": [
+        {
+            "name": "Target 1",
+            "includePath": [
+                "d:\\Masterpiece\\Product\\YW_001\\Code\\Template\\User",
+                "d:\\Masterpiece\\Product\\YW_001\\Code\\Template\\Hardware",
+                "d:\\Masterpiece\\Product\\YW_001\\Code\\Template\\Startup",
+                "d:\\Masterpiece\\Product\\YW_001\\Code\\Template\\Readme",
+                "D:\\Worksoftware\\Keil\\ARM\\C51\\INC"
+            ],
+            "defines": [
+                "__C51__",
+                "__VSCODE_C51__",
+                "reentrant=",
+                "compact=",
+                "small=",
+                "large=",
+                "data=",
+                "idata=",
+                "pdata=",
+                "bdata=",
+                "xdata=",
+                "code=",
+                "bit=char",
+                "sbit=char",
+                "sfr=char",
+                "sfr16=int",
+                "sfr32=int",
+                "interrupt=",
+                "using=",
+                "_at_=",
+                "_priority_=",
+                "_task_="
+            ],
+            "intelliSenseMode": "${default}"
+        }
+    ],
+    "version": 4
+}

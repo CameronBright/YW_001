@@ -1,9 +1,0 @@
-Removed Pin From Net: NetName=2D Pin=U2-5
-Removed Pin From Net: NetName=2C Pin=U2-6
-Added Pin To Net: NetName=2D Pin=U2-18
-Added Pin To Net: NetName=2C Pin=U2-19
-Added Pin To Net: NetName=RXD Pin=U2-5
-Added Net: Name=RXD
-Added Member To Class: ClassName=YW_001 Member=Component R? Res2
-Added Member To Class: ClassName=YW_001 Member=Component R? Res2
-Added Member To Class: ClassName=YW_001 Member=Component R? Res2

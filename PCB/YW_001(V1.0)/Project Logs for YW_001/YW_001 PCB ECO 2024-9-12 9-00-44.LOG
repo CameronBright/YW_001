@@ -1,0 +1,6 @@
+Added Pin To Net: NetName=LIN Pin=B1-1
+Added Pin To Net: NetName=LIN Pin=D12-1
+Added Pin To Net: NetName=LIN Pin=H1-6
+Added Pin To Net: NetName=LIN Pin=X1-2
+Added Net: Name=LIN
+Added Room: Name=YW_001

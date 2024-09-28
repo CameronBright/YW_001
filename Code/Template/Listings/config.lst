@@ -1,0 +1,44 @@
+C51 COMPILER V9.59.0.0   CONFIG                                                            09/28/2024 12:00:17 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE CONFIG
+OBJECT MODULE PLACED IN .\Objects\config.obj
+COMPILER INVOKED BY: D:\Worksoftware\Keil\ARM\C51\BIN\C51.EXE Hardware\config.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\User;.
+                    -\Hardware;.\Startup;.\Readme) DEBUG OBJECTEXTEND PRINT(.\Listings\config.lst) TABS(2) OBJECT(.\Objects\config.obj)
+
+line level    source
+
+   1          #include "config.h"
+   2          
+   3          void Config_Init(void)
+   4          {
+   5   1        Buzzer = 1 ; //蜂鸣器上电默认关闭
+   6   1      
+   7   1      //  LED1 = 0;//LED灯上电常亮
+   8   1      //  LED2 = 0;
+   9   1      //  LED3 = 0;
+  10   1      //  LED4 = 0;
+  11   1      }
+  12          
+  13          //void EXTI_Init(void)
+  14          //{
+  15          //  P_SW2 |= 0x80;  //扩展寄存器XFR访问使能
+  16          //  P0IM0 = 0x00; //下降沿中断
+  17          //  P0IM1 = 0x00;
+  18          //  P0INTE |= 0x10; //使能 P0^4口中断
+  19          //  P_SW2 &= ~0x80;
+  20          //}
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =      3    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

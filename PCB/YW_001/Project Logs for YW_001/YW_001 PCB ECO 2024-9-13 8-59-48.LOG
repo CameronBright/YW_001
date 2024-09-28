@@ -1,8 +1,0 @@
-Added Pin To Net: NetName=Q1 Pin=Q5-1
-Added Pin To Net: NetName=Q1 Pin=U5-22
-Added Net: Name=Q1
-Added Member To Class: ClassName=YW_001 Member=Component C? 102
-Added Member To Class: ClassName=YW_001 Member=Component C? 102
-Added Member To Class: ClassName=YW_001 Member=Component C? 1000uF25V
-Added Member To Class: ClassName=YW_001 Member=Component R? Res2
-Added Member To Class: ClassName=YW_001 Member=Component R? Res2

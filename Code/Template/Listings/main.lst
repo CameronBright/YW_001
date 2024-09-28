@@ -1,0 +1,228 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              09/28/2024 17:30:12 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Worksoftware\Keil\ARM\C51\BIN\C51.EXE User\main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\User;.\Hardw
+                    -are;.\Startup;.\Readme) DEBUG OBJECTEXTEND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          /*
+   2          
+   3          Version: 0.0.0
+   4          Check out the Readme.txt for more details 
+   5           
+   6          */
+   7           
+   8          //系统库
+   9          #include "main.h"
+  10          #include <stdio.h>
+  11          
+  12          //外设库
+  13          #include "gpio.h"
+  14          #include "timer.h"
+  15          #include "key.h"
+  16          #include "seg.h"
+  17          //#include "eeprom.h"
+  18          #include "config.h"
+  19          
+  20          //-----------功能选择区-----------
+  21          
+  22          
+  23          //程序执行函数
+  24          void Key_Proc(void);       //Keystroke process function
+  25          void Disp_Proc(void);      //LCD Dsiplay process function
+  26          
+  27          //自定义功能函数 
+  28          void Delay(unsigned int delay); //定时器延时 会卡住当前函数，但不会影响整个代码
+  29          void Peripheral_Init(void);//外设初始化函数
+  30          
+  31          //----------------可能需要修改的变量-------------------------------------
+  32          
+  33          //刷新计数,按键10ms扫描一次,数码管200ms刷新一次
+  34          u16 key_slow_down = 0; //按键刷新计数
+  35          u16 disp_slow_down = 0; //显示刷新计数
+  36          
+  37          /*按键相关变量*/
+  38          u16 key_tick;        //long key press count
+  39          bit key_sw = 1;
+  40          bit keylong = 1;
+  41          
+  42          u8 key_value = 0;       //按键值
+  43          u8 key_down;            //按键下降沿
+  44          u8 key_up;              //上升沿
+  45          u8 key_old;             //上次的按键值
+  46          
+  47          u16 delay_tick;         //软件延时计数
+  48          
+  49          /*数码管显示相关变量*/
+  50          char seg_string[2];     //数码管显示字符串
+  51          char seg_buf[2];        //数码管显示缓冲区
+  52          
+  53          u8 seg_buf2;            //按键下LED控制 0b0011 1111 1为亮 0为灭
+  54          u8 pos1 = 0;              //数码管段选
+C51 COMPILER V9.59.0.0   MAIN                                                              09/28/2024 17:30:12 PAGE 2   
+
+  55          u8 pos2 = 0;              //数码管段选
+  56          
+  57          /*外设相关变量*/
+  58          u16 buzzer_tick;        //蜂鸣器短响计数
+  59          
+  60          void main(){
+  61   1        GPIO_Init();      //引脚初始化
+  62   1        Timer1_Init();    //定时器初始化
+  63   1        EA = 1;           //打开总中断
+  64   1        Config_Init();    //初始化配置
+  65   1        Peripheral_Init();//外设函数初始状态
+  66   1        
+  67   1        while(1)
+  68   1        {
+  69   2          Key_Proc();
+  70   2          Disp_Proc();
+  71   2          LED1 = 0; 
+  72   2        }
+  73   1      } 
+  74          
+  75          //================中断函数=======================
+  76          void Timer1_Isr(void) interrupt 3   //1ms 中断一次
+  77          {
+  78   1        //本中断函数内全是赋值，没有运算，每次中断时间不会过长
+  79   1        if(++key_slow_down == 10) key_slow_down = 0;   //10ms扫描一次按键
+  80   1        if(++disp_slow_down == 200) disp_slow_down = 0;//200ms刷新一次数码管
+  81   1         
+  82   1      //--------------------1s定时器---------------------------
+  83   1        
+  84   1      
+  85   1      //--------------------外设控制---------------------------
+  86   1        
+  87   1        //按键长短按计时
+  88   1        if(key_tick > 0) key_tick--;  
+  89   1          
+  90   1        //软件延时
+  91   1        if(delay_tick > 0) delay_tick--;//延时函数 使用会卡住当前函数，但不影响其他功能
+  92   1          
+  93   1        //数码管段选刷新
+  94   1      //  Seg_Disp(seg_buf,pwm_index,seg_buf2,pos);
+  95   1        if(++pos1 > 3) pos1 = 0;
+  96   1        if(++pos2 > 3) pos2 = 0;
+  97   1      }
+  98          
+  99          //================按键逻辑函数=======================
+ 100          void Key_Proc(void)        //Keystroke process function
+ 101          {
+ 102   1        if(key_slow_down) return;   //10ms进入一次此函数
+ 103   1          key_slow_down = 1;
+ 104   1          
+ 105   1        key_value = Key_Scan(); //读取键值 强制消抖
+ 106   1        key_down = key_value & (key_value ^ key_old); //下降沿
+ 107   1        key_up = ~key_value & (key_value ^ key_old);  //上升沿
+ 108   1        key_old = key_value;
+ 109   1        
+ 110   1        if(key_down)       //长按3秒
+ 111   1          key_tick = 3000;
+ 112   1        
+ 113   1         //key_old键值 tick按下计数  long自锁，保证按键代码只触发一次
+ 114   1        if(key_old && key_tick == 0 && keylong){
+ 115   2          keylong = 0;    
+ 116   2          if(key_old == 1){     //长按童锁键    
+C51 COMPILER V9.59.0.0   MAIN                                                              09/28/2024 17:30:12 PAGE 3   
+
+ 117   3            //------按键1长按功能--------
+ 118   3            
+ 119   3            //------按键1长按功能--------       
+ 120   3          }
+ 121   2          if(key_old == 4){ //长按磁化键  
+ 122   3            //------按键4长按功能--------
+ 123   3      
+ 124   3            //------按键4长按功能--------   
+ 125   3          }
+ 126   2        }
+ 127   1        
+ 128   1        if(key_up) //keydown-keyup顺序不能更改
+ 129   1          keylong = 1;
+ 130   1        
+ 131   1        if(key_tick && key_sw){
+ 132   2          switch(key_up)
+ 133   2          {
+ 134   3            case 1://锁键1
+ 135   3            {     
+ 136   4              LED1 ^=1;
+ 137   4              break;
+ 138   4            }
+ 139   3            case 2://按键2
+ 140   3            {
+ 141   4              LED2 ^= 1;
+ 142   4              break;
+ 143   4            }
+ 144   3            case 3://按键3
+ 145   3            {
+ 146   4              LED3 ^= 1;
+ 147   4              break;
+ 148   4            }
+ 149   3            case 4://按键4
+ 150   3            {             
+ 151   4              break;                             
+ 152   4            }                                    
+ 153   3            default:                             
+ 154   3              break;
+ 155   3          }
+ 156   2        }
+ 157   1          
+ 158   1      }
+ 159          
+ 160          //================显示逻辑函数=======================
+ 161          void Disp_Proc(void)       //LCD Dsiplay process function
+ 162          {
+ 163   1        if(disp_slow_down) return;   //200ms进入一次此函数(200ms刷新一次屏幕)
+ 164   1          disp_slow_down = 1;
+ 165   1        
+ 166   1        
+ 167   1      //  sprintf(seg_string,"%02d",(unsigned int)save_flag); //调试
+ 168   1          
+ 169   1      //  sprintf(seg_string,"%2d",(unsigned int)Mode);//显示模式 1=高原模式，出水85°，0=普通模式，出水93°
+ 170   1        
+ 171   1      //  Led_Trans(seg_string,seg_buf);
+ 172   1          
+ 173   1      }
+ 174          
+ 175          //================自定义函数=======================
+ 176          
+ 177          //定时器延时 会卡住当前函数，但不会影响整个代码
+ 178          void Delay(unsigned int delay) 
+C51 COMPILER V9.59.0.0   MAIN                                                              09/28/2024 17:30:12 PAGE 4   
+
+ 179          {
+ 180   1        delay_tick = delay;
+ 181   1        while(delay_tick > 0);
+ 182   1      }
+ 183          
+ 184          /*
+ 185          tick: 蜂鸣器响的时间ms
+ 186          */
+ 187          void Buzzer_Ctrl(u16 tick)  
+ 188          {
+ 189   1        buzzer_tick = tick;
+ 190   1      }
+ 191          
+ 192          void Peripheral_Init(void)//外设初始化函数
+ 193          {
+ 194   1        Buzzer_Ctrl(200);//上电短响200ms一次
+ 195   1        seg_buf2 = 0x30;
+ 196   1       
+ 197   1      }
+ 198          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    288    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     21    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

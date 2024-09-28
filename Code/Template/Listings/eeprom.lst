@@ -1,0 +1,77 @@
+C51 COMPILER V9.59.0.0   EEPROM                                                            09/28/2024 12:00:18 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE EEPROM
+OBJECT MODULE PLACED IN .\Objects\eeprom.obj
+COMPILER INVOKED BY: D:\Worksoftware\Keil\ARM\C51\BIN\C51.EXE Hardware\eeprom.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\User;.
+                    -\Hardware;.\Startup;.\Readme) DEBUG OBJECTEXTEND PRINT(.\Listings\eeprom.lst) TABS(2) OBJECT(.\Objects\eeprom.obj)
+
+line level    source
+
+   1          #include "eeprom.h"
+   2          
+   3          //void IapIdle()
+   4          //{
+   5          //  IAP_CONTR = 0; //关闭 IAP 功能
+   6          //  IAP_CMD = 0; //清除命令寄存器
+   7          //  IAP_TRIG = 0; //清除触发寄存器
+   8          //  IAP_ADDRH = 0x80; //将地址设置到非 IAP 区域
+   9          //  IAP_ADDRL = 0;
+  10          //}
+  11          
+  12          //char IapRead(int addr)
+  13          //{
+  14          //  char dat;
+  15          //  IAP_CONTR = 0x80; //使能 IAP
+  16          //  IAP_TPS = 12; //设置等待参数 12MHz
+  17          //  IAP_CMD = 1; //设置 IAP 读命令
+  18          //  IAP_ADDRL = addr; //设置 IAP 低地址
+  19          //  IAP_ADDRH = addr >> 8; //设置 IAP 高地址
+  20          //  IAP_TRIG = 0x5a; //写触发命令(0x5a)
+  21          //  IAP_TRIG = 0xa5; //写触发命令(0xa5)
+  22          //  _nop_();
+  23          //  dat = IAP_DATA; //读 IAP 数据
+  24          //  IapIdle(); //关闭 IAP 功能
+  25          //  return dat;
+  26          //}
+  27          //void IapProgram(int addr, char dat)
+  28          //{
+  29          //  IAP_CONTR = 0x80; //使能 IAP
+  30          //  IAP_TPS = 12; //设置等待参数 12MHz
+  31          //  IAP_CMD = 2; //设置 IAP 写命令
+  32          //  IAP_ADDRL = addr; //设置 IAP 低地址
+  33          //  IAP_ADDRH = addr >> 8; //设置 IAP 高地址
+  34          //  IAP_DATA = dat; //写 IAP 数据
+  35          //  IAP_TRIG = 0x5a; //写触发命令(0x5a)
+  36          //  IAP_TRIG = 0xa5; //写触发命令(0xa5)
+  37          //  _nop_();
+  38          //  IapIdle(); //关闭 IAP 功能
+  39          //}
+  40          //void IapErase(int addr)
+  41          //{
+  42          //  IAP_CONTR = 0x80; //使能 IAP
+  43          //  IAP_TPS = 12; //设置等待参数 12MHz
+  44          //  IAP_CMD = 3; //设置 IAP 擦除命令
+  45          //  IAP_ADDRL = addr; //设置 IAP 低地址
+  46          //  IAP_ADDRH = addr >> 8; //设置 IAP 高地址
+  47          //  IAP_TRIG = 0x5a; //写触发命令(0x5a)
+  48          //  IAP_TRIG = 0xa5; //写触发命令(0xa5)
+  49          //  _nop_(); //
+  50          //  IapIdle(); //关闭 IAP 功能
+  51          //}
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+C51 COMPILER V9.59.0.0   EEPROM                                                            09/28/2024 12:00:18 PAGE 2   
+
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
