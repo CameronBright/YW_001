@@ -1,6 +1,0 @@
-Removed Pin From Net: NetName=Q1 Pin=U5-22
-Removed Pin From Net: NetName=2C Pin=U5-23
-Removed Pin From Net: NetName=1A Pin=U5-40
-Removed Pin From Net: NetName=1F Pin=U5-45
-Added Pin To Net: NetName=1A Pin=U5-22
-Added Pin To Net: NetName=1F Pin=U5-23

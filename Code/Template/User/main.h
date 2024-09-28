@@ -8,7 +8,8 @@
 //#define MAIN_Fosc		24000000L	//定义主时钟
 
 #include 	<intrins.h>
-#include	"STC15Fxxxx.H"
+//#include	"STC15Fxxxx.H"
+#include    <STC8H.H>
 
 sbit Buzzer = P5^2; //蜂鸣器 低电平工作
 //sbit Buzzer = P3^7; //蜂鸣器太吵了先给他掐了

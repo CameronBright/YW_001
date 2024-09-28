@@ -1,5 +1,0 @@
-Removed Pin From Net: NetName=BEEP Pin=U5-30
-Removed Pin From Net: NetName=D1 Pin=U5-48
-Added Pin To Net: NetName=D1 Pin=U5-30
-Added Pin To Net: NetName=BEEP Pin=U5-48
-Added Room: Name=YW_001

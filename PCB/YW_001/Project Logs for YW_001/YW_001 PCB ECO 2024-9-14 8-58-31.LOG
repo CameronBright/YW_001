@@ -1,7 +1,0 @@
-Removed Pin From Net: NetName=2DIG2 Pin=U5-34
-Removed Pin From Net: NetName=2DIG3 Pin=U5-35
-Removed Pin From Net: NetName=2b Pin=U5-36
-Added Pin To Net: NetName=2DIG1 Pin=U5-34
-Added Pin To Net: NetName=2A Pin=U5-35
-Added Pin To Net: NetName=2F Pin=U5-36
-Added Pin To Net: NetName=2DIG2 Pin=U5-37

@@ -1,0 +1,73 @@
+Removed Pin From Net: NetName=1DIG3 Pin=R7-1
+Removed Pin From Net: NetName=NetLED1_8 Pin=R7-2
+Change Component Designator: OldDesignator=R6 NewDesignator=R7
+Added Component: Designator=LED1(LED-SEG-TH_FJ5461AH)
+Add component (AddParameter): Name = "Add into BOM"; Value = "yes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Convert to PCB"; Value = "yes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Datasheet"; Value = "https://atta.szlcsc.com/upload/public/pdf/source/20121231/1457706574845.pdf"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Device"; Value = "FJ5461BH 橙红"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Digit/Alpha Size(inch)"; Value = "0.56"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "JLCPCB Part Class"; Value = "Extended Part"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LCSC Part Name"; Value = "4位0.56英寸红色数码管 共阳极"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LED Polarity"; Value = "共阳极"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Luminous Color"; Value = "红色"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "志浩"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part"; Value = "FJ5461BH 橙红"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Characters"; Value = "4位"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "LCSC"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Footprint"; Value = "插件"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part"; Value = "C10713"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Symbol"; Value = "FJ5461BH-red-orange"; VariantName = "[No Variations]"
+Added Component: Designator=LED2(LED-SEG-TH_FJ5461AH)
+Add component (AddParameter): Name = "Add into BOM"; Value = "yes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Convert to PCB"; Value = "yes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Datasheet"; Value = "https://atta.szlcsc.com/upload/public/pdf/source/20121231/1457706574845.pdf"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Device"; Value = "FJ5461BH 橙红"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Digit/Alpha Size(inch)"; Value = "0.56"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "JLCPCB Part Class"; Value = "Extended Part"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LCSC Part Name"; Value = "4位0.56英寸红色数码管 共阳极"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LED Polarity"; Value = "共阳极"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Luminous Color"; Value = "红色"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "志浩"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer Part"; Value = "FJ5461BH 橙红"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Characters"; Value = "4位"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier"; Value = "LCSC"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Footprint"; Value = "插件"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supplier Part"; Value = "C10713"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Symbol"; Value = "FJ5461BH-red-orange"; VariantName = "[No Variations]"
+Added Component: Designator=R6(0805)
+Added Pin To Net: NetName=1E Pin=LED1-1
+Added Pin To Net: NetName=1D Pin=LED1-2
+Added Pin To Net: NetName=1DP Pin=LED1-3
+Added Pin To Net: NetName=1C Pin=LED1-4
+Added Pin To Net: NetName=1G Pin=LED1-5
+Added Pin To Net: NetName=1b Pin=LED1-7
+Added Pin To Net: NetName=NetLED1_8 Pin=LED1-8
+Added Pin To Net: NetName=NetLED1_9 Pin=LED1-9
+Added Pin To Net: NetName=1F Pin=LED1-10
+Added Pin To Net: NetName=1A Pin=LED1-11
+Added Pin To Net: NetName=NetLED1_12 Pin=LED1-12
+Added Pin To Net: NetName=2E Pin=LED2-1
+Added Pin To Net: NetName=2D Pin=LED2-2
+Added Pin To Net: NetName=2DP Pin=LED2-3
+Added Pin To Net: NetName=2C Pin=LED2-4
+Added Pin To Net: NetName=2G Pin=LED2-5
+Added Pin To Net: NetName=2b Pin=LED2-7
+Added Pin To Net: NetName=NetLED2_9 Pin=LED2-9
+Added Pin To Net: NetName=2F Pin=LED2-10
+Added Pin To Net: NetName=2A Pin=LED2-11
+Added Pin To Net: NetName=NetLED2_12 Pin=LED2-12
+Added Pin To Net: NetName=1DIG3 Pin=R6-1
+Added Pin To Net: NetName=NetLED1_8 Pin=R6-2
+Change Net Name : Old Net Name=NetLED2_6 New Net Name=2DIG3
+Change Net Name : Old Net Name=NetLED2_8 New Net Name=2DIG4
+Added Pin To Net: NetName=NetLED2_8 Pin=LED2-8
+Added Pin To Net: NetName=NetLED2_8 Pin=R10-2
+Added Net: Name=NetLED2_8
+Added Member To Class: ClassName=YW_001 Member=Component LED1 FJ5461BH 橙红
+Added Member To Class: ClassName=YW_001 Member=Component LED2 FJ5461BH 橙红
+Added Member To Class: ClassName=YW_001 Member=Component R5 10R
+Added Member To Class: ClassName=YW_001 Member=Component R6 10R
+Added Member To Class: ClassName=YW_001 Member=Component R7 10R
+Added Member To Class: ClassName=YW_001 Member=Component R11 10R
+Added Member To Class: ClassName=YW_001 Member=Component U1 BUZZER

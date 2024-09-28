@@ -51,7 +51,8 @@ char seg_string[2];			//数码管显示字符串
 char seg_buf[2];				//数码管显示缓冲区
 
 u8 seg_buf2;						//按键下LED控制 0b0011 1111 1为亮 0为灭
-u8 pos = 0;  						//数码管段选
+u8 pos1 = 0;  						//数码管段选
+u8 pos2 = 0;  						//数码管段选
 
 /*外设相关变量*/
 u16 buzzer_tick;        //蜂鸣器短响计数
@@ -91,8 +92,8 @@ void Timer1_Isr(void) interrupt 3   //1ms 中断一次
 		
 	//数码管段选刷新
 //	Seg_Disp(seg_buf,pwm_index,seg_buf2,pos);
-//	if(++pos > 4) pos = 0;
-	
+	if(++pos1 > 3) pos1 = 0;
+	if(++pos2 > 3) pos2 = 0;
 }
 
 //================按键逻辑函数=======================
@@ -132,14 +133,17 @@ void Key_Proc(void)   	   //Keystroke process function
 		{
 			case 1://锁键1
 			{ 		
+				LED1 ^=1;
 				break;
 			}
 			case 2://按键2
 			{
+				LED2 ^= 1;
 				break;
 			}
 			case 3://按键3
 			{
+				LED3 ^= 1;
 				break;
 			}
 			case 4://按键4

@@ -1,0 +1,6 @@
+Removed Pin From Net: NetName=NetQ5_3 Pin=Q6-3
+Added Pin To Net: NetName=NetQ5_3 Pin=Q6-1
+Added Member To Class: ClassName=YW_001 Member=Component C? 102
+Added Member To Class: ClassName=YW_001 Member=Component C? 102
+Added Member To Class: ClassName=YW_001 Member=Component C? 1000uF25V
+Added Member To Class: ClassName=YW_001 Member=Component R? Res2

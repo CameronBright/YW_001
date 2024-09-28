@@ -1,6 +1,0 @@
-Added Pin To Net: NetName=NetLED1_6 Pin=LED1-6
-Added Pin To Net: NetName=NetLED1_6 Pin=R24-1
-Added Net: Name=NetLED1_6
-Added Member To Class: ClassName=YW_001 Member=Component Q? SW8050
-Added Member To Class: ClassName=YW_001 Member=Component R? Res2
-Added Member To Class: ClassName=YW_001 Member=Component R? Res2

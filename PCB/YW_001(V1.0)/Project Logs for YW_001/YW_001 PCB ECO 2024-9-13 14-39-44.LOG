@@ -1,0 +1,8 @@
+Removed Pin From Net: NetName=2G Pin=U5-2
+Removed Pin From Net: NetName=2F Pin=U5-3
+Removed Pin From Net: NetName=D3 Pin=U5-21
+Removed Pin From Net: NetName=D2 Pin=U5-24
+Added Pin To Net: NetName=D2 Pin=U5-2
+Added Pin To Net: NetName=D3 Pin=U5-3
+Added Pin To Net: NetName=2F Pin=U5-21
+Added Pin To Net: NetName=2G Pin=U5-24

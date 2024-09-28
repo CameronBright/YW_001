@@ -1,0 +1,24 @@
+Added Pin To Net: NetName=NetB1_2 Pin=D4-2
+Added Pin To Net: NetName=NetC?_1 Pin=C?-1
+Added Pin To Net: NetName=NetC?_1 Pin=R?-1
+Added Pin To Net: NetName=NetC?_1 Pin=USB?-1
+Added Net: Name=NetC?_1
+Add Net: Net with name "NetC?_2" already exists
+Added Pin To Net: NetName=NetD?_1 Pin=U10-5
+Added Pin To Net: NetName=NetD?_1 Pin=U10-6
+Added Pin To Net: NetName=NetD?_1 Pin=U10-7
+Added Pin To Net: NetName=NetD?_1 Pin=U10-8
+Added Pin To Net: NetName=NetD?_1 Pin=USB?-2
+Added Pin To Net: NetName=NetD?_1 Pin=USB?-3
+Added Pin To Net: NetName=NetD?_1 Pin=D?-2
+Added Net: Name=NetD?_1
+Added Member To Class: ClassName=YW_001 Member=Component C? 104P
+Added Member To Class: ClassName=YW_001 Member=Component R? Res2
+Added Member To Class: ClassName=YW_001 Member=Component R? Res2
+Added Member To Class: ClassName=YW_001 Member=Component R? Res2
+Added Member To Class: ClassName=YW_001 Member=Component R? Res2
+Added Member To Class: ClassName=YW_001 Member=Component R? Res2
+Added Member To Class: ClassName=YW_001 Member=Component R? Res2
+Added Member To Class: ClassName=YW_001 Member=Component R? Res2
+Added Member To Class: ClassName=YW_001 Member=Component R? Res2
+Added Room: Name=YW_001

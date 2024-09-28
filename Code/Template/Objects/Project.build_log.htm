@@ -25,26 +25,31 @@ D:\Masterpiece\Product\YW_001\Code\Template\Project.uvproj
 Project File Date:  09/27/2024
 
 <h2>Output:</h2>
-Rebuild target 'Target 1'
-assembling ISR.ASM...
+Build target 'Target 1'
 compiling main.c...
-compiling key.c...
-compiling timer.c...
-compiling gpio.c...
-compiling config.c...
 compiling seg.c...
-compiling eeprom.c...
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_DELAY?MAIN
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_LED_TRANS?SEG
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SEG_DISP?SEG
-Program Size: data=45.2 xdata=0 code=1000
-creating hex file from ".\Objects\Project"...
-".\Objects\Project" - 0 Error(s), 3 Warning(s).
-Build Time Elapsed:  00:00:02
+Hardware\seg.c(59): warning C235: parameter 2: different types
+Hardware\seg.c(64): error C202: 'DIG1': undefined identifier
+Hardware\seg.c(65): error C202: 'DIG2': undefined identifier
+Hardware\seg.c(66): error C202: 'seg_buf': undefined identifier
+Hardware\seg.c(70): error C202: 'DIG2': undefined identifier
+Hardware\seg.c(71): error C202: 'DIG1': undefined identifier
+Hardware\seg.c(72): error C202: 'seg_buf': undefined identifier
+Hardware\seg.c(76): error C202: 'DIG3': undefined identifier
+Hardware\seg.c(77): error C202: 'DIG1': undefined identifier
+Hardware\seg.c(96): error C202: 'COM1': undefined identifier
+Hardware\seg.c(97): error C202: 'DIG1': undefined identifier
+Hardware\seg.c(117): error C202: 'COM2': undefined identifier
+Hardware\seg.c(118): error C202: 'DIG1': undefined identifier
+Hardware\seg.c(183): error C202: 'LEDA': undefined identifier
+Hardware\seg.c(184): error C202: 'LEDB': undefined identifier
+Hardware\seg.c(185): error C202: 'LEDC': undefined identifier
+Hardware\seg.c(186): error C202: 'LEDD': undefined identifier
+Hardware\seg.c(187): error C202: 'LEDE': undefined identifier
+Hardware\seg.c(188): error C202: 'LEDF': undefined identifier
+Hardware\seg.c(189): error C202: 'LEDG': undefined identifier
+Target not created.
+Build Time Elapsed:  00:00:00
 </pre>
 </body>
 </html>

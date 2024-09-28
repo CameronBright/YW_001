@@ -47,7 +47,7 @@ void Led_Trans(unsigned char *seg_string,unsigned char *seg_buf)
 seg_buf1:磁化强度数码管显示选择，=0时磁化强度显示0，=1时磁化强度显示1.选择范围只有0-3
 seg_buf2:按键下方的LED显示开关，按位判断，可精确控制每一位LED ，并方便移植
 表格：
-seg_buf2 = 2b: 0 0 1  1 	1  1  1  1     =1开 =0关
+seg_led = 2b: 0 0 1  1 	1  1  1  1     =1开 =0关
 						      磁  磁 童 开 冷 磁
 							    化  化 锁 水 水 化
 							    时  强
@@ -55,7 +55,7 @@ seg_buf2 = 2b: 0 0 1  1 	1  1  1  1     =1开 =0关
 ======================================================================================
 */
 
-void Seg_Disp(unsigned char *seg_buf,unsigned char seg_buf1,unsigned char seg_buf2, unsigned char pos)
+void Seg_Disp(unsigned char *seg_buf1,unsigned char *seg_buf2,unsigned char seg_led, unsigned char pos)
 {
 	unsigned char seg_string;
 	
@@ -138,6 +138,48 @@ void Seg_Disp(unsigned char *seg_buf,unsigned char seg_buf1,unsigned char seg_bu
 	}
 	
 	
+	LED1A = seg_string >> 7;
+	LED1B = seg_string >> 6 & 0x01;
+	LED1C = seg_string >> 5 & 0x01;
+	LED1D = seg_string >> 4 & 0x01;
+	LED1E = seg_string >> 3 & 0x01;
+	LED1F = seg_string >> 2 & 0x01;
+	LED1G = seg_string >> 1 & 0x01;
+	
+}
+
+void Seg_Disp1(unsigned char *seg_buf, unsigned char pos)
+{
+	unsigned char seg_string;
+	
+	switch(pos){	
+		case 0:{		
+			ADIG1 = 0;
+			ADIG2 = ADIG3 = ADIG4 = 1;		
+			seg_string = seg_buf[pos];	
+			break;
+		}
+		case 1:{
+			ADIG2 = 0;
+			ADIG1 = ADIG3 = ADIG4 = 1;
+			seg_string = seg_buf[pos];	
+			break;
+		}
+		case 2:{
+			ADIG3 = 0;
+			ADIG1 = ADIG2 = ADIG4 = 1;
+			seg_string = seg_buf[pos];
+			break;
+		}
+		case 3:{
+			ADIG4 = 0;
+			ADIG1 = ADIG2 = ADIG3 = 1;
+			seg_string = seg_buf[pos];	
+			break;
+		}
+		default: break;
+	}
+
 	LEDA = seg_string >> 7;
 	LEDB = seg_string >> 6 & 0x01;
 	LEDC = seg_string >> 5 & 0x01;
@@ -146,4 +188,3 @@ void Seg_Disp(unsigned char *seg_buf,unsigned char seg_buf1,unsigned char seg_bu
 	LEDF = seg_string >> 2 & 0x01;
 	LEDG = seg_string >> 1 & 0x01;
 }
-

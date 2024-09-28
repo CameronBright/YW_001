@@ -1,8 +1,0 @@
-Removed Pin From Net: NetName=K4 Pin=U2-33
-Removed Pin From Net: NetName=K3 Pin=U2-34
-Removed Pin From Net: NetName=K2 Pin=U2-35
-Removed Pin From Net: NetName=K1 Pin=U2-36
-Added Pin To Net: NetName=K4 Pin=U2-31
-Added Pin To Net: NetName=K3 Pin=U2-32
-Added Pin To Net: NetName=K2 Pin=U2-33
-Added Pin To Net: NetName=K1 Pin=U2-34
