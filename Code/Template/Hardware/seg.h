@@ -33,5 +33,6 @@ sbit LED2DP = P4^2;
 
 void Led_Trans(unsigned char *seg_string,unsigned char *seg_buf);
 void Seg_Disp1(unsigned char *seg_buf, unsigned char pos);
+void Seg_Disp2(unsigned char *seg_buf, unsigned char pos);
  
 #endif

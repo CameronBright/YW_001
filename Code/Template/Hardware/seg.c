@@ -175,43 +175,97 @@ seg_led = 2b: 0 0 1  1 	1  1  1  1     =1开 =0关
 //	
 //}
 
+/*
+======================================================================================
+单个数码管控制函数,适用于引脚顺序不连贯,多个数码管同时控制
+*seg_buf:数码管段选 例seg_buf[2] = {0xFC,0x60};0xFC数码管表示为0，0x60为1
+seg_buf1:磁化强度数码管显示选择，=0时磁化强度显示0，=1时磁化强度显示1.选择范围只有0-3
+seg_buf2:按键下方的LED显示开关，按位判断，可精确控制每一位LED ，并方便移植
+表格：
+
+======================================================================================
+*/
 void Seg_Disp1(unsigned char *seg_buf, unsigned char pos)
 {
 	unsigned char seg_string;
 	
 	switch(pos){	
 		case 0:{		
-			ADIG1 = 0;
-			ADIG2 = ADIG3 = ADIG4 = 1;		
+			ADIG1 = 1;
+			ADIG2 = ADIG3 = ADIG4 = 0;		
 			seg_string = seg_buf[pos];	
 			break;
 		}
 		case 1:{
-			ADIG2 = 0;
-			ADIG1 = ADIG3 = ADIG4 = 1;
+			ADIG2 = 1;
+			ADIG1 = ADIG3 = ADIG4 = 0;
 			seg_string = seg_buf[pos];	
 			break;
 		}
 		case 2:{
-			ADIG3 = 0;
-			ADIG1 = ADIG2 = ADIG4 = 1;
+			ADIG3 = 1;
+			ADIG1 = ADIG2 = ADIG4 = 0;
 			seg_string = seg_buf[pos];
 			break;
 		}
 		case 3:{
-			ADIG4 = 0;
-			ADIG1 = ADIG2 = ADIG3 = 1;
+			ADIG4 = 1;
+			ADIG1 = ADIG2 = ADIG3 = 0;
 			seg_string = seg_buf[pos];	
 			break;
 		}
 		default: break;
 	}
 
-	LED1A = seg_string >> 7;
-	LED1B = seg_string >> 6 & 0x01;
-	LED1C = seg_string >> 5 & 0x01;
-	LED1D = seg_string >> 4 & 0x01;
-	LED1E = seg_string >> 3 & 0x01;
-	LED1F = seg_string >> 2 & 0x01;
-	LED1G = seg_string >> 1 & 0x01;
+	LED1A = ~seg_string >> 7;
+	LED1B = ~seg_string >> 6 & 0x01;
+	LED1C = ~seg_string >> 5 & 0x01;
+	LED1D = ~seg_string >> 4 & 0x01;
+	LED1E = ~seg_string >> 3 & 0x01;
+	LED1F = ~seg_string >> 2 & 0x01;
+	LED1G = ~seg_string >> 1 & 0x01;
+	LED1DP = ~seg_string & 0x01;
 }
+
+void Seg_Disp2(unsigned char *seg_buf, unsigned char pos)
+{
+	unsigned char seg_string;
+	
+	switch(pos){	
+		case 0:{		
+			BDIG1 = 1;
+			BDIG2 = BDIG3 = BDIG4 = 0;		
+			seg_string = seg_buf[pos];	
+			break;
+		}
+		case 1:{
+			BDIG2 = 1;
+			BDIG1 = BDIG3 = BDIG4 = 0;
+			seg_string = seg_buf[pos];	
+			break;
+		}
+		case 2:{
+			BDIG3 = 1;
+			BDIG1 = BDIG2 = BDIG4 = 0;
+			seg_string = seg_buf[pos];
+			break;
+		}
+		case 3:{
+			BDIG4 = 1;
+			BDIG1 = BDIG2 = BDIG3 = 0;
+			seg_string = seg_buf[pos];	
+			break;
+		}
+		default: break;
+	}
+
+	LED2A = ~seg_string >> 7;
+	LED2B = ~seg_string >> 6 & 0x01;
+	LED2C = ~seg_string >> 5 & 0x01;
+	LED2D = ~seg_string >> 4 & 0x01;
+	LED2E = ~seg_string >> 3 & 0x01;
+	LED2F = ~seg_string >> 2 & 0x01;
+	LED2G = ~seg_string >> 1 & 0x01;
+	LED2DP = ~seg_string & 0x01;
+}
+

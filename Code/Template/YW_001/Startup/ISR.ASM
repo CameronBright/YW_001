@@ -1,6 +1,0 @@
-	CSEG AT 012BH  ;P0 口中断入口地址
-	JMP P0INT_ISR
-	
-P0INT_ISR:
-	JMP 006BH ;借用 13 号中断的入口地址-
-	END

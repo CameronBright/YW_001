@@ -47,15 +47,18 @@ u8 key_old;  		 				//上次的按键值
 u16 delay_tick;         //软件延时计数
 
 /*数码管显示相关变量*/
-char seg_string[2];			//数码管显示字符串
-char seg_buf[2];				//数码管显示缓冲区
+char seg_string[4];			//数码管显示字符串
+char seg_buf1[4];				//数码管1显示缓冲区
+char seg_buf2[4];				//数码管2显示缓冲区
 
-u8 seg_buf2;						//按键下LED控制 0b0011 1111 1为亮 0为灭
-u8 pos1 = 0;  						//数码管段选
-u8 pos2 = 0;  						//数码管段选
+u8 LED_buf;						//按键下LED控制 0b0011 1111 1为亮 0为灭
+u8 pos = 0;  						//数码管段选
 
 /*外设相关变量*/
 u16 buzzer_tick;        //蜂鸣器短响计数
+
+/*代码控制变量*/
+u8 mode;                //模式切换
 
 void main(){
 	GPIO_Init();			//引脚初始化
@@ -72,33 +75,6 @@ void main(){
 		LED2 = 0;
 		LED3 = 0;		
 		
-		//ADIG1 = 1;
-		ADIG2 = 1;
-		ADIG3 = 1;
-		ADIG4 = 1;
-	
-		BDIG1 = 1;
-		BDIG2 = 1;
-		BDIG3 = 1;
-		BDIG4 = 1;
-	
-		LED1A = 0;
-		LED1B = 0;
-		LED1C = 0;
-		LED1D = 0;
-		LED1E = 0;
-		LED1F = 0;
-		LED1G = 0;
-		LED1DP = 0;
-	
-	LED2A = 0;
-	LED2B = 0;
-	LED2C = 0;
-	LED2D = 0;
-	LED2E = 0;
-	LED2F = 0;
-	LED2G = 0;
-	LED2DP = 0;
 	}
 } 
 
@@ -121,9 +97,10 @@ void Timer1_Isr(void) interrupt 3   //1ms 中断一次
 	if(delay_tick > 0) delay_tick--;//延时函数 使用会卡住当前函数，但不影响其他功能
 		
 	//数码管段选刷新
-//	Seg_Disp(seg_buf,pwm_index,seg_buf2,pos);
-	if(++pos1 > 3) pos1 = 0;
-	if(++pos2 > 3) pos2 = 0;
+
+	Seg_Disp1(seg_buf1,pos);
+	Seg_Disp2(seg_buf2,pos);
+	if(++pos > 3) pos = 0;
 }
 
 //================按键逻辑函数=======================
@@ -177,7 +154,8 @@ void Key_Proc(void)   	   //Keystroke process function
 				break;
 			}
 			case 4://按键4
-			{    					
+			{  
+				mode++;
 				break;                             
 			}                            				 
 			default:                             
@@ -194,13 +172,10 @@ void Disp_Proc(void)  	   //LCD Dsiplay process function
 		disp_slow_down = 1;
 	
 	
-//	sprintf(seg_string,"%02d",(unsigned int)save_flag); //调试
-	 	
-//	sprintf(seg_string,"%2d",(unsigned int)Mode);//显示模式 1=高原模式，出水85°，0=普通模式，出水93°
-	
-//	Led_Trans(seg_string,seg_buf);
-		
-	
+	sprintf(seg_string,"%02d",(unsigned int)mode); //调试
+	Led_Trans(seg_string,seg_buf1); 	
+	sprintf(seg_string,"%2d",(unsigned int)mode);
+	Led_Trans(seg_string,seg_buf2); 
 	
 }
 
@@ -224,7 +199,7 @@ void Buzzer_Ctrl(u16 tick)
 void Peripheral_Init(void)//外设初始化函数
 {
 	Buzzer_Ctrl(200);//上电短响200ms一次
-	seg_buf2 = 0x30;
+	LED_buf = 0x30;
  
 }
 
