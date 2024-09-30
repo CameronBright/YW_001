@@ -6,6 +6,9 @@
  #define MAIN_Fosc		11059200L	//定义主时钟
 //#define MAIN_Fosc		 5529600L	//定义主时钟
 //#define MAIN_Fosc		24000000L	//定义主时钟
+ 
+#define Baudrate2   115200L     //波特率
+#define UART2_BUF_LENGTH    64
 
 #include 	<intrins.h>
 //#include	"STC15Fxxxx.H"

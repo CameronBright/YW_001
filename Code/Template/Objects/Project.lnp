@@ -5,6 +5,7 @@
 ".\Objects\gpio.obj",
 ".\Objects\config.obj",
 ".\Objects\seg.obj",
-".\Objects\eeprom.obj" 
+".\Objects\eeprom.obj",
+".\Objects\uart.obj" 
 TO ".\Objects\Project" 
 PRINT(".\Listings\Project.m51") RAMSIZE(256) 

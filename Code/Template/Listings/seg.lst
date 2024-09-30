@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   SEG                                                               09/29/2024 10:14:31 PAGE 1   
+C51 COMPILER V9.59.0.0   SEG                                                               09/30/2024 09:08:11 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE SEG
@@ -62,7 +62,7 @@ line level    source
   52   2          switch(seg_string[j]){
   53   3            case '0': temp = 0xFC; break;
   54   3            case '1': temp = 0x60; break;
-C51 COMPILER V9.59.0.0   SEG                                                               09/29/2024 10:14:31 PAGE 2   
+C51 COMPILER V9.59.0.0   SEG                                                               09/30/2024 09:08:11 PAGE 2   
 
   55   3            case '2': temp = 0xDA; break;
   56   3            case '3': temp = 0xF2; break;
@@ -126,7 +126,7 @@ line level    source
  114          //          break;
  115          //        case 3:
  116          //          seg_string = 0xF2; //3
-C51 COMPILER V9.59.0.0   SEG                                                               09/29/2024 10:14:31 PAGE 3   
+C51 COMPILER V9.59.0.0   SEG                                                               09/30/2024 09:08:11 PAGE 3   
 
  117          //          break;
  118          //        default: break;
@@ -190,7 +190,7 @@ line level    source
  176          //}
  177          
  178          /*
-C51 COMPILER V9.59.0.0   SEG                                                               09/29/2024 10:14:31 PAGE 4   
+C51 COMPILER V9.59.0.0   SEG                                                               09/30/2024 09:08:11 PAGE 4   
 
  179          ======================================================================================
  180          单个数码管控制函数,适用于引脚顺序不连贯,多个数码管同时控制
@@ -254,7 +254,7 @@ line level    source
  238   3            seg_string = seg_buf[pos];  
  239   3            break;
  240   3          }
-C51 COMPILER V9.59.0.0   SEG                                                               09/29/2024 10:14:31 PAGE 5   
+C51 COMPILER V9.59.0.0   SEG                                                               09/30/2024 09:08:11 PAGE 5   
 
  241   2          case 1:{
  242   3            BDIG2 = 1;

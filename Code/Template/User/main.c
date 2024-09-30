@@ -1,6 +1,6 @@
 /*
 
-Version: 0.0.0
+Version: 1.0.1
 Check out the Readme.txt for more details 
  
 */
@@ -14,6 +14,7 @@ Check out the Readme.txt for more details
 #include "timer.h"
 #include "key.h"
 #include "seg.h"
+#include "uart.h"
 //#include "eeprom.h"
 #include "config.h"
 
@@ -27,6 +28,9 @@ void Disp_Proc(void);  	   //LCD Dsiplay process function
 //自定义功能函数 
 void Delay(unsigned int delay); //定时器延时 会卡住当前函数，但不会影响整个代码
 void Peripheral_Init(void);//外设初始化函数
+
+void UART2_config(u8 brt);   // 选择波特率, 2: 使用Timer2做波特率, 其它值: 无效.
+void PrintString2(u8 *puts);
 
 //----------------可能需要修改的变量-------------------------------------
 
@@ -54,6 +58,13 @@ char seg_buf2[4];				//数码管2显示缓冲区
 u8 LED_buf;						//按键下LED控制 0b0011 1111 1为亮 0为灭
 u8 pos = 0;  						//数码管段选
 
+/*串口相关变量*/
+u8  TX2_Cnt;    //发送计数
+u8  RX2_Cnt;    //接收计数
+bit B_TX2_Busy; //发送忙标志
+
+u8  xdata RX2_Buffer[UART2_BUF_LENGTH]; //接收缓冲
+
 /*外设相关变量*/
 u16 buzzer_tick;        //蜂鸣器短响计数
 
@@ -63,12 +74,23 @@ u8 mode;                //模式切换
 void main(){
 	GPIO_Init();			//引脚初始化
 	Timer1_Init();		//定时器初始化
+	UART2_config(2);  // 选择波特率, 2: 使用Timer2做波特率, 其它值: 无效.
 	EA = 1;         	//打开总中断
 	Config_Init();  	//初始化配置
 	Peripheral_Init();//外设函数初始状态
 	
+	PrintString2("STC8H8K64U UART2 Test Programme!\r\n");  //UART2发送一个字符串
+	
 	while(1)
 	{
+		        if((TX2_Cnt != RX2_Cnt) && (!B_TX2_Busy))   //收到数据, 发送空闲
+        {
+            S2BUF = RX2_Buffer[TX2_Cnt];
+            B_TX2_Busy = 1;
+            if(++TX2_Cnt >= UART2_BUF_LENGTH)   TX2_Cnt = 0;
+        }
+		
+		
 		Key_Proc();
 		Disp_Proc();
 		LED1 = 0;
@@ -174,7 +196,7 @@ void Disp_Proc(void)  	   //LCD Dsiplay process function
 	
 	sprintf(seg_string,"%02d",(unsigned int)mode); //调试
 	Led_Trans(seg_string,seg_buf1); 	
-	sprintf(seg_string,"%2d",(unsigned int)mode);
+	sprintf(seg_string,"%02d",(unsigned int)mode);
 	Led_Trans(seg_string,seg_buf2); 
 	
 }
@@ -203,3 +225,97 @@ void Peripheral_Init(void)//外设初始化函数
  
 }
 
+
+//================串口2功能函数=======================
+
+//========================================================================
+// 函数: void PrintString2(u8 *puts)
+// 描述: 串口2发送字符串函数。
+// 参数: puts:  字符串指针.
+// 返回: none.
+// 版本: VER1.0
+// 日期: 2014-11-28
+// 备注: 
+//========================================================================
+void PrintString2(unsigned char *puts)
+{
+    for (; *puts != 0;  puts++)     //遇到停止符0结束
+    {
+        S2BUF = *puts;
+        B_TX2_Busy = 1;
+        while(B_TX2_Busy);
+    }
+}
+
+//========================================================================
+// 函数: SetTimer2Baudraye(u16 dat)
+// 描述: 设置Timer2做波特率发生器。
+// 参数: dat: Timer2的重装值.
+// 返回: none.
+// 版本: VER1.0
+// 日期: 2014-11-28
+// 备注: 
+//========================================================================
+void SetTimer2Baudraye(unsigned int dat)  // 使用Timer2做波特率.
+{
+    AUXR &= ~(1<<4);    //Timer stop
+    AUXR &= ~(1<<3);    //Timer2 set As Timer
+    AUXR |=  (1<<2);    //Timer2 set as 1T mode
+    T2H = dat / 256;
+    T2L = dat % 256;
+    IE2  &= ~(1<<2);    //禁止中断
+    AUXR |=  (1<<4);    //Timer run enable
+}
+
+//========================================================================
+// 函数: void UART2_config(u8 brt)
+// 描述: UART2初始化函数。
+// 参数: brt: 选择波特率, 2: 使用Timer2做波特率, 其它值: 无效.
+// 返回: none.
+// 版本: VER1.0
+// 日期: 2014-11-28
+// 备注: 
+//========================================================================
+void UART2_config(unsigned char brt)    // 选择波特率, 2: 使用Timer2做波特率, 其它值: 无效.
+{
+    /*********** 波特率固定使用定时器2 *****************/
+    if(brt == 2)
+    {
+        SetTimer2Baudraye(65536UL - (MAIN_Fosc / 4) / Baudrate2);
+
+        S2CON &= ~(1<<7);   // 8位数据, 1位起始位, 1位停止位, 无校验
+        IE2   |= 1;         //允许中断
+        S2CON |= (1<<4);    //允许接收
+        P_SW2 &= ~0x01; 
+        P_SW2 |= 0;         //UART2 switch to: 0: P1.0 P1.1,  1: P4.6 P4.7
+
+        B_TX2_Busy = 0;
+        TX2_Cnt = 0;
+        RX2_Cnt = 0;
+    }
+}
+
+//========================================================================
+// 函数: void UART2_int (void) interrupt UART2_VECTOR
+// 描述: UART2中断函数。
+// 参数: nine.
+// 返回: none.
+// 版本: VER1.0
+// 日期: 2014-11-28
+// 备注: 
+//========================================================================
+void UART2_int (void) interrupt 8
+{
+    if((S2CON & 1) != 0)
+    {
+        S2CON &= ~1;    //Clear Rx flag
+        RX2_Buffer[RX2_Cnt] = S2BUF;
+        if(++RX2_Cnt >= UART2_BUF_LENGTH)   RX2_Cnt = 0;
+    }
+
+    if((S2CON & 2) != 0)
+    {
+        S2CON &= ~2;    //Clear Tx flag
+        B_TX2_Busy = 0;
+    }
+}

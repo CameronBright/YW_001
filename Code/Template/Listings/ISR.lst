@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  ISR                                                                  09/29/2024 08:56:06 PAGE     1
+A51 MACRO ASSEMBLER  ISR                                                                  09/30/2024 09:02:40 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.2.7.0
@@ -14,7 +14,7 @@ LOC  OBJ            LINE     SOURCE
 012D                   4     P0INT_ISR:
 012D 016B              5             JMP 006BH ;借用 13 号中断的入口地址-
                        6             END
-A51 MACRO ASSEMBLER  ISR                                                                  09/29/2024 08:56:06 PAGE     2
+A51 MACRO ASSEMBLER  ISR                                                                  09/30/2024 09:02:40 PAGE     2
 
 SYMBOL TABLE LISTING
 ------ ----- -------
