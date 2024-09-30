@@ -243,7 +243,7 @@ void PrintString2(unsigned char *puts)
     {
         S2BUF = *puts;
         B_TX2_Busy = 1;
-        while(B_TX2_Busy);
+        whil e(B_TX2_Busy);
     }
 }
 

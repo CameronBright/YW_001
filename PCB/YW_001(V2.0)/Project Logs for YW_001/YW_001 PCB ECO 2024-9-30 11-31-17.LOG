@@ -1,0 +1,4 @@
+Removed Pin From Net: NetName=1DIG1 Pin=U5-7
+Removed Pin From Net: NetName=1DIG4 Pin=U5-12
+Added Pin To Net: NetName=1DIG1 Pin=U5-12
+Added Room: Name=YW_001
