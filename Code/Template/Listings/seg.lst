@@ -1,10 +1,10 @@
-C51 COMPILER V9.59.0.0   SEG                                                               09/30/2024 09:08:11 PAGE 1   
+C51 COMPILER V9.57.0.0   SEG                                                               10/02/2024 09:41:08 PAGE 1   
 
 
-C51 COMPILER V9.59.0.0, COMPILATION OF MODULE SEG
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE SEG
 OBJECT MODULE PLACED IN .\Objects\seg.obj
-COMPILER INVOKED BY: D:\Worksoftware\Keil\ARM\C51\BIN\C51.EXE Hardware\seg.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\User;.\Ha
-                    -rdware;.\Startup;.\Readme) DEBUG OBJECTEXTEND PRINT(.\Listings\seg.lst) TABS(2) OBJECT(.\Objects\seg.obj)
+COMPILER INVOKED BY: D:\Software\WorkSoftware\Keil5\C51\C51\BIN\C51.EXE Hardware\seg.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.
+                    -\User;.\Hardware;.\Startup;.\Readme) DEBUG OBJECTEXTEND PRINT(.\Listings\seg.lst) TABS(2) OBJECT(.\Objects\seg.obj)
 
 line level    source
 
@@ -57,240 +57,340 @@ line level    source
   47   1        unsigned char i,j = 0;
   48   1        unsigned char temp;
   49   1        
-  50   1        for (i=0;i<2;i++,j++)
+  50   1        for (i=0;i<4;i++,j++)
   51   1        {
   52   2          switch(seg_string[j]){
-  53   3            case '0': temp = 0xFC; break;
-  54   3            case '1': temp = 0x60; break;
-C51 COMPILER V9.59.0.0   SEG                                                               09/30/2024 09:08:11 PAGE 2   
+  53   3      //      case '0': temp = 0xFC; break;
+  54   3      //      case '1': temp = 0x60; break;
+C51 COMPILER V9.57.0.0   SEG                                                               10/02/2024 09:41:08 PAGE 2   
 
-  55   3            case '2': temp = 0xDA; break;
-  56   3            case '3': temp = 0xF2; break;
-  57   3            case '4': temp = 0x66; break;
-  58   3            case '5': temp = 0xB6; break;
-  59   3            case '6': temp = 0xBE; break;
-  60   3            case '7': temp = 0xE0; break;
-  61   3            case '8': temp = 0xFF; break;
-  62   3            case '9': temp = 0xF6; break;
-  63   3            default:  temp = 0xFC; break;
-  64   3          }
-  65   2          seg_buf[i] = temp;
-  66   2        }
-  67   1        
-  68   1      }
-  69          
-  70          /*
-  71          ======================================================================================
-  72          多个数码管和LED控制函数,适用于引脚顺序不连贯,多个数码管同时控制
-  73          *seg_buf:数码管段选 例seg_buf[2] = {0xFC,0x60};0xFC数码管表示为0，0x60为1
-  74          seg_buf1:磁化强度数码管显示选择，=0时磁化强度显示0，=1时磁化强度显示1.选择范围只有0-3
-  75          seg_buf2:按键下方的LED显示开关，按位判断，可精确控制每一位LED ，并方便移植
-  76          表格：
-  77          seg_led = 2b: 0 0 1  1  1  1  1  1     =1开 =0关
-  78                            磁  磁 童 开 冷 磁
-  79                            化  化 锁 水 水 化
-  80                            时  强
-  81                            间  度
-  82          ======================================================================================
-  83          */
-  84          
-  85          //void Seg_Disp(unsigned char *seg_buf1,unsigned char *seg_buf2,unsigned char seg_led, unsigned char pos)
-  86          //{
-  87          //  unsigned char seg_string;
-  88          //  
-  89          //  switch(pos){  
-  90          //    case 0:{    
-  91          //      DIG1 = 0;
-  92          //      DIG2 = DIG3 = COM1 = COM2 = 1;    
-  93          //      seg_string = seg_buf[pos];  
-  94          //      break;
-  95          //    }
-  96          //    case 1:{
-  97          //      DIG2 = 0;
-  98          //      DIG1 = DIG3 = COM1 = COM2 = 1;
-  99          //      seg_string = seg_buf[pos];  
- 100          //      break;
- 101          //    }
- 102          //    case 2:{
- 103          //      DIG3 = 0;
- 104          //      DIG1 = DIG2 = COM1 = COM2 = 1;
- 105          //      switch(seg_buf1){
- 106          //        case 0:
- 107          //          seg_string = 0xFC; //0
- 108          //          break;
- 109          //        case 1:
- 110          //          seg_string = 0x60; //1
- 111          //          break;
- 112          //        case 2:
- 113          //          seg_string = 0xDA; //2
- 114          //          break;
- 115          //        case 3:
- 116          //          seg_string = 0xF2; //3
-C51 COMPILER V9.59.0.0   SEG                                                               09/30/2024 09:08:11 PAGE 3   
+  55   3      //      case '2': temp = 0xDA; break;
+  56   3      //      case '3': temp = 0xF2; break;
+  57   3      //      case '4': temp = 0x66; break;
+  58   3      //      case '5': temp = 0xB6; break;
+  59   3      //      case '6': temp = 0xBE; break;
+  60   3      //      case '7': temp = 0xE0; break;
+  61   3      //      case '8': temp = 0xFF; break;
+  62   3      //      case '9': temp = 0xF6; break;
+  63   3      //      default:  temp = 0xFC; break;
+  64   3            
+  65   3              case '0': temp = 0xFC; break;
+  66   3              case '1': temp = 0x0C; break;
+  67   3              case '2': temp = 0xDA; break;
+  68   3              case '3': temp = 0x9E; break;
+  69   3              case '4': temp = 0x2E; break;
+  70   3              case '5': temp = 0xB6; break;
+  71   3              case '6': temp = 0xF6; break;
+  72   3              case '7': temp = 0x1C; break;
+  73   3              case '8': temp = 0xFE; break;
+  74   3              case '9': temp = 0x3E; break;
+  75   3              case '-': temp = 0x02; break;
+  76   3              default:  temp = 0xFC; break;
+  77   3          }
+  78   2          seg_buf[i] = temp;
+  79   2        }
+  80   1        
+  81   1      }
+  82          
+  83          /*
+  84          ======================================================================================
+  85          多个数码管和LED控制函数,适用于引脚顺序不连贯,多个数码管同时控制
+  86          *seg_buf:数码管段选 例seg_buf[2] = {0xFC,0x60};0xFC数码管表示为0，0x60为1
+  87          seg_buf1:磁化强度数码管显示选择，=0时磁化强度显示0，=1时磁化强度显示1.选择范围只有0-3
+  88          seg_buf2:按键下方的LED显示开关，按位判断，可精确控制每一位LED ，并方便移植
+  89          表格：
+  90          seg_led = 2b: 0 0 1  1  1  1  1  1     =1开 =0关
+  91                            磁  磁 童 开 冷 磁
+  92                            化  化 锁 水 水 化
+  93                            时  强
+  94                            间  度
+  95          ======================================================================================
+  96          */
+  97          
+  98          //void Seg_Disp(unsigned char *seg_buf1,unsigned char *seg_buf2,unsigned char seg_led, unsigned char pos)
+  99          //{
+ 100          //  unsigned char seg_string;
+ 101          //  
+ 102          //  switch(pos){  
+ 103          //    case 0:{    
+ 104          //      DIG1 = 0;
+ 105          //      DIG2 = DIG3 = COM1 = COM2 = 1;    
+ 106          //      seg_string = seg_buf[pos];  
+ 107          //      break;
+ 108          //    }
+ 109          //    case 1:{
+ 110          //      DIG2 = 0;
+ 111          //      DIG1 = DIG3 = COM1 = COM2 = 1;
+ 112          //      seg_string = seg_buf[pos];  
+ 113          //      break;
+ 114          //    }
+ 115          //    case 2:{
+ 116          //      DIG3 = 0;
+C51 COMPILER V9.57.0.0   SEG                                                               10/02/2024 09:41:08 PAGE 3   
 
- 117          //          break;
- 118          //        default: break;
- 119          //      }
- 120          //      break;
- 121          //    }
- 122          //    case 3:{
- 123          //      COM1 = 0;
- 124          //      DIG1 = DIG2 = DIG3 = COM2 = 1;
- 125          //      
- 126          //      if(((seg_buf2 >> 5) & 0x01))
- 127          //        seg_string = 0xE0; //磁化时间LED
- 128          //      else 
- 129          //        seg_string = 0x00; //磁化时间LED
- 130          //      
- 131          //      if(((seg_buf2 >> 3) & 0x01))
- 132          //        seg_string |= 0x18; //童锁LED
- 133          //      else 
- 134          //        seg_string &= ~0x18; //童锁LED
- 135          //      
- 136          //      if(((seg_buf2 >> 2) & 0x01))
- 137          //        seg_string |= 0x06; //开水键LED
- 138          //      else 
- 139          //        seg_string &= ~0x06; //开水键LED
- 140          //        
- 141          //      break;
- 142          //    }
- 143          //    case 4:{
- 144          //      COM2 = 0;
- 145          //      DIG1 = DIG2 = DIG3 = COM1 = 1;
- 146          //      
- 147          //      if(((seg_buf2 >> 4) & 0x01))
- 148          //        seg_string = 0xE0; //磁化强度LED
- 149          //      else 
- 150          //        seg_string = 0x00; //磁化强度LED
- 151          //      
- 152          //      if(((seg_buf2 >> 1) & 0x01))
- 153          //        seg_string |= 0x18; //冷水LED
- 154          //      else 
- 155          //        seg_string &= ~0x18; //冷水LED
- 156          //      
- 157          //      if(seg_buf2 & 0x01)
- 158          //        seg_string |= 0x06; //磁化LED
- 159          //      else 
- 160          //        seg_string &= ~0x06; //磁化LED
- 161          //      
- 162          //      break;
- 163          //    }
- 164          //    default: break;
- 165          //  }
- 166          //  
- 167          //  
- 168          //  LED1A = seg_string >> 7;
- 169          //  LED1B = seg_string >> 6 & 0x01;
- 170          //  LED1C = seg_string >> 5 & 0x01;
- 171          //  LED1D = seg_string >> 4 & 0x01;
- 172          //  LED1E = seg_string >> 3 & 0x01;
- 173          //  LED1F = seg_string >> 2 & 0x01;
- 174          //  LED1G = seg_string >> 1 & 0x01;
- 175          //  
- 176          //}
- 177          
- 178          /*
-C51 COMPILER V9.59.0.0   SEG                                                               09/30/2024 09:08:11 PAGE 4   
+ 117          //      DIG1 = DIG2 = COM1 = COM2 = 1;
+ 118          //      switch(seg_buf1){
+ 119          //        case 0:
+ 120          //          seg_string = 0xFC; //0
+ 121          //          break;
+ 122          //        case 1:
+ 123          //          seg_string = 0x60; //1
+ 124          //          break;
+ 125          //        case 2:
+ 126          //          seg_string = 0xDA; //2
+ 127          //          break;
+ 128          //        case 3:
+ 129          //          seg_string = 0xF2; //3
+ 130          //          break;
+ 131          //        default: break;
+ 132          //      }
+ 133          //      break;
+ 134          //    }
+ 135          //    case 3:{
+ 136          //      COM1 = 0;
+ 137          //      DIG1 = DIG2 = DIG3 = COM2 = 1;
+ 138          //      
+ 139          //      if(((seg_buf2 >> 5) & 0x01))
+ 140          //        seg_string = 0xE0; //磁化时间LED
+ 141          //      else 
+ 142          //        seg_string = 0x00; //磁化时间LED
+ 143          //      
+ 144          //      if(((seg_buf2 >> 3) & 0x01))
+ 145          //        seg_string |= 0x18; //童锁LED
+ 146          //      else 
+ 147          //        seg_string &= ~0x18; //童锁LED
+ 148          //      
+ 149          //      if(((seg_buf2 >> 2) & 0x01))
+ 150          //        seg_string |= 0x06; //开水键LED
+ 151          //      else 
+ 152          //        seg_string &= ~0x06; //开水键LED
+ 153          //        
+ 154          //      break;
+ 155          //    }
+ 156          //    case 4:{
+ 157          //      COM2 = 0;
+ 158          //      DIG1 = DIG2 = DIG3 = COM1 = 1;
+ 159          //      
+ 160          //      if(((seg_buf2 >> 4) & 0x01))
+ 161          //        seg_string = 0xE0; //磁化强度LED
+ 162          //      else 
+ 163          //        seg_string = 0x00; //磁化强度LED
+ 164          //      
+ 165          //      if(((seg_buf2 >> 1) & 0x01))
+ 166          //        seg_string |= 0x18; //冷水LED
+ 167          //      else 
+ 168          //        seg_string &= ~0x18; //冷水LED
+ 169          //      
+ 170          //      if(seg_buf2 & 0x01)
+ 171          //        seg_string |= 0x06; //磁化LED
+ 172          //      else 
+ 173          //        seg_string &= ~0x06; //磁化LED
+ 174          //      
+ 175          //      break;
+ 176          //    }
+ 177          //    default: break;
+ 178          //  }
+C51 COMPILER V9.57.0.0   SEG                                                               10/02/2024 09:41:08 PAGE 4   
 
- 179          ======================================================================================
- 180          单个数码管控制函数,适用于引脚顺序不连贯,多个数码管同时控制
- 181          *seg_buf:数码管段选 例seg_buf[2] = {0xFC,0x60};0xFC数码管表示为0，0x60为1
- 182          seg_buf1:磁化强度数码管显示选择，=0时磁化强度显示0，=1时磁化强度显示1.选择范围只有0-3
- 183          seg_buf2:按键下方的LED显示开关，按位判断，可精确控制每一位LED ，并方便移植
- 184          表格：
- 185          
- 186          ======================================================================================
- 187          */
- 188          void Seg_Disp1(unsigned char *seg_buf, unsigned char pos)
- 189          {
- 190   1        unsigned char seg_string;
- 191   1        
- 192   1        switch(pos){  
- 193   2          case 0:{    
- 194   3            ADIG1 = 1;
- 195   3            ADIG2 = ADIG3 = ADIG4 = 0;    
- 196   3            seg_string = seg_buf[pos];  
- 197   3            break;
- 198   3          }
- 199   2          case 1:{
- 200   3            ADIG2 = 1;
- 201   3            ADIG1 = ADIG3 = ADIG4 = 0;
- 202   3            seg_string = seg_buf[pos];  
- 203   3            break;
- 204   3          }
- 205   2          case 2:{
- 206   3            ADIG3 = 1;
- 207   3            ADIG1 = ADIG2 = ADIG4 = 0;
- 208   3            seg_string = seg_buf[pos];
- 209   3            break;
- 210   3          }
- 211   2          case 3:{
- 212   3            ADIG4 = 1;
- 213   3            ADIG1 = ADIG2 = ADIG3 = 0;
- 214   3            seg_string = seg_buf[pos];  
- 215   3            break;
- 216   3          }
- 217   2          default: break;
- 218   2        }
- 219   1      
- 220   1        LED1A = ~seg_string >> 7;
- 221   1        LED1B = ~seg_string >> 6 & 0x01;
- 222   1        LED1C = ~seg_string >> 5 & 0x01;
- 223   1        LED1D = ~seg_string >> 4 & 0x01;
- 224   1        LED1E = ~seg_string >> 3 & 0x01;
- 225   1        LED1F = ~seg_string >> 2 & 0x01;
- 226   1        LED1G = ~seg_string >> 1 & 0x01;
- 227   1        LED1DP = ~seg_string & 0x01;
- 228   1      }
- 229          
- 230          void Seg_Disp2(unsigned char *seg_buf, unsigned char pos)
- 231          {
- 232   1        unsigned char seg_string;
- 233   1        
- 234   1        switch(pos){  
- 235   2          case 0:{    
- 236   3            BDIG1 = 1;
- 237   3            BDIG2 = BDIG3 = BDIG4 = 0;    
- 238   3            seg_string = seg_buf[pos];  
- 239   3            break;
- 240   3          }
-C51 COMPILER V9.59.0.0   SEG                                                               09/30/2024 09:08:11 PAGE 5   
+ 179          //  
+ 180          //  
+ 181          //  LED1A = seg_string >> 7;
+ 182          //  LED1B = seg_string >> 6 & 0x01;
+ 183          //  LED1C = seg_string >> 5 & 0x01;
+ 184          //  LED1D = seg_string >> 4 & 0x01;
+ 185          //  LED1E = seg_string >> 3 & 0x01;
+ 186          //  LED1F = seg_string >> 2 & 0x01;
+ 187          //  LED1G = seg_string >> 1 & 0x01;
+ 188          //  
+ 189          //}
+ 190          
+ 191          /*
+ 192          ======================================================================================
+ 193          单个数码管控制函数,适用于引脚顺序不连贯,多个数码管同时控制
+ 194          *seg_buf:数码管段选 例seg_buf[2] = {0xFC,0x60};0xFC数码管表示为0，0x60为1
+ 195          seg_buf1:磁化强度数码管显示选择，=0时磁化强度显示0，=1时磁化强度显示1.选择范围只有0-3
+ 196          seg_buf2:按键下方的LED显示开关，按位判断，可精确控制每一位LED ，并方便移植
+ 197          表格：
+ 198          
+ 199          ======================================================================================
+ 200          */
+ 201          //void Seg_Disp1(unsigned char *seg_buf, unsigned char pos)
+ 202          //{
+ 203          //  unsigned char seg_string;
+ 204          //  
+ 205          //  switch(pos){  
+ 206          //    case 0:{    
+ 207          //      ADIG1 = 1;
+ 208          //      ADIG2 = ADIG3 = ADIG4 = 0;    
+ 209          //      seg_string = seg_buf[pos];  
+ 210          //      break;
+ 211          //    }
+ 212          //    case 1:{
+ 213          //      ADIG2 = 1;
+ 214          //      ADIG1 = ADIG3 = ADIG4 = 0;
+ 215          //      seg_string = seg_buf[pos];  
+ 216          //      break;
+ 217          //    }
+ 218          //    case 2:{
+ 219          //      ADIG3 = 1;
+ 220          //      ADIG1 = ADIG2 = ADIG4 = 0;
+ 221          //      seg_string = seg_buf[pos];
+ 222          //      break;
+ 223          //    }
+ 224          //    case 3:{
+ 225          //      ADIG4 = 1;
+ 226          //      ADIG1 = ADIG2 = ADIG3 = 0;
+ 227          //      seg_string = seg_buf[pos];  
+ 228          //      break;
+ 229          //    }
+ 230          //    default: break;
+ 231          //  }
+ 232          
+ 233          //  LED1A = ~seg_string >> 7;
+ 234          //  LED1B = ~seg_string >> 6 & 0x01;
+ 235          //  LED1C = ~seg_string >> 5 & 0x01;
+ 236          //  LED1D = ~seg_string >> 4 & 0x01;
+ 237          //  LED1E = ~seg_string >> 3 & 0x01;
+ 238          //  LED1F = ~seg_string >> 2 & 0x01;
+ 239          //  LED1G = ~seg_string >> 1 & 0x01;
+ 240          //  LED1DP = ~seg_string & 0x01;
+C51 COMPILER V9.57.0.0   SEG                                                               10/02/2024 09:41:08 PAGE 5   
 
- 241   2          case 1:{
- 242   3            BDIG2 = 1;
- 243   3            BDIG1 = BDIG3 = BDIG4 = 0;
- 244   3            seg_string = seg_buf[pos];  
- 245   3            break;
- 246   3          }
- 247   2          case 2:{
- 248   3            BDIG3 = 1;
- 249   3            BDIG1 = BDIG2 = BDIG4 = 0;
- 250   3            seg_string = seg_buf[pos];
- 251   3            break;
- 252   3          }
- 253   2          case 3:{
- 254   3            BDIG4 = 1;
- 255   3            BDIG1 = BDIG2 = BDIG3 = 0;
- 256   3            seg_string = seg_buf[pos];  
- 257   3            break;
- 258   3          }
- 259   2          default: break;
- 260   2        }
- 261   1      
- 262   1        LED2A = ~seg_string >> 7;
- 263   1        LED2B = ~seg_string >> 6 & 0x01;
- 264   1        LED2C = ~seg_string >> 5 & 0x01;
- 265   1        LED2D = ~seg_string >> 4 & 0x01;
- 266   1        LED2E = ~seg_string >> 3 & 0x01;
- 267   1        LED2F = ~seg_string >> 2 & 0x01;
- 268   1        LED2G = ~seg_string >> 1 & 0x01;
- 269   1        LED2DP = ~seg_string & 0x01;
- 270   1      }
- 271          
+ 241          //}
+ 242          
+ 243          //void Seg_Disp2(unsigned char *seg_buf, unsigned char pos)
+ 244          //{
+ 245          //  unsigned char seg_string;
+ 246          //  
+ 247          //  switch(pos){  
+ 248          //    case 0:{    
+ 249          //      BDIG1 = 1;
+ 250          //      BDIG2 = BDIG3 = BDIG4 = 0;    
+ 251          //      seg_string = seg_buf[pos];  
+ 252          //      break;
+ 253          //    }
+ 254          //    case 1:{
+ 255          //      BDIG2 = 1;
+ 256          //      BDIG1 = BDIG3 = BDIG4 = 0;
+ 257          //      seg_string = seg_buf[pos];  
+ 258          //      break;
+ 259          //    }
+ 260          //    case 2:{
+ 261          //      BDIG3 = 1;
+ 262          //      BDIG1 = BDIG2 = BDIG4 = 0;
+ 263          //      seg_string = seg_buf[pos];
+ 264          //      break;
+ 265          //    }
+ 266          //    case 3:{
+ 267          //      BDIG4 = 1;
+ 268          //      BDIG1 = BDIG2 = BDIG3 = 0;
+ 269          //      seg_string = seg_buf[pos];  
+ 270          //      break;
+ 271          //    }
+ 272          //    default: break;
+ 273          //  }
+ 274          
+ 275          //  LED2A = ~seg_string >> 7;
+ 276          //  LED2B = ~seg_string >> 6 & 0x01;
+ 277          //  LED2C = ~seg_string >> 5 & 0x01;
+ 278          //  LED2D = ~seg_string >> 4 & 0x01;
+ 279          //  LED2E = ~seg_string >> 3 & 0x01;
+ 280          //  LED2F = ~seg_string >> 2 & 0x01;
+ 281          //  LED2G = ~seg_string >> 1 & 0x01;
+ 282          //  LED2DP = ~seg_string & 0x01;
+ 283          //}
+ 284          void Seg_Disp1(unsigned char *seg_buf, unsigned char pos)
+ 285          {
+ 286   1        unsigned char seg_string;
+ 287   1        
+ 288   1        switch(pos){  
+ 289   2          case 0:{    
+ 290   3            ADIG4 = 1;
+ 291   3            ADIG1 = ADIG2 = ADIG3 = 0;  
+ 292   3            seg_string = seg_buf[pos];  
+ 293   3            break;
+ 294   3          }
+ 295   2          case 1:{
+ 296   3            ADIG3 = 1;
+ 297   3            ADIG1 = ADIG2 = ADIG4 = 0;
+ 298   3            seg_string = seg_buf[pos];  
+ 299   3            break;
+ 300   3          }
+ 301   2          case 2:{
+ 302   3            ADIG2 = 1;
+C51 COMPILER V9.57.0.0   SEG                                                               10/02/2024 09:41:08 PAGE 6   
+
+ 303   3            ADIG1 = ADIG3 = ADIG4 = 0;
+ 304   3            seg_string = seg_buf[pos];
+ 305   3            break;
+ 306   3          }
+ 307   2          case 3:{
+ 308   3            ADIG1 = 1;
+ 309   3            ADIG2 = ADIG3 = ADIG4 = 0;  
+ 310   3            seg_string = seg_buf[pos];  
+ 311   3            break;
+ 312   3          }
+ 313   2          default: break;
+ 314   2        }
+ 315   1      
+ 316   1        LED1A = ~seg_string >> 7;
+ 317   1        LED1B = ~seg_string >> 6 & 0x01;
+ 318   1        LED1C = ~seg_string >> 5 & 0x01;
+ 319   1        LED1D = ~seg_string >> 4 & 0x01;
+ 320   1        LED1E = ~seg_string >> 3 & 0x01;
+ 321   1        LED1F = ~seg_string >> 2 & 0x01;
+ 322   1        LED1G = ~seg_string >> 1 & 0x01;
+ 323   1        LED1DP = ~seg_string & 0x01;
+ 324   1      }
+ 325          
+ 326          void Seg_Disp2(unsigned char *seg_buf, unsigned char pos)
+ 327          {
+ 328   1        unsigned char seg_string;
+ 329   1        
+ 330   1        switch(pos){  
+ 331   2          case 0:{    
+ 332   3            BDIG4 = 1;
+ 333   3            BDIG1 = BDIG2 = BDIG3 = 0;    
+ 334   3            seg_string = seg_buf[pos];  
+ 335   3            break;
+ 336   3          }
+ 337   2          case 1:{
+ 338   3            BDIG3 = 1;
+ 339   3            BDIG1 = BDIG2 = BDIG4 = 0;
+ 340   3            seg_string = seg_buf[pos];  
+ 341   3            break;
+ 342   3          }
+ 343   2          case 2:{
+ 344   3            BDIG2 = 1;
+ 345   3            BDIG1 = BDIG3 = BDIG4 = 0;
+ 346   3            seg_string = seg_buf[pos];
+ 347   3            break;
+ 348   3          }
+ 349   2          case 3:{
+ 350   3            BDIG1 = 1;
+ 351   3            BDIG2 = BDIG3 = BDIG4 = 0;
+ 352   3            seg_string = seg_buf[pos];  
+ 353   3            break;
+ 354   3          }
+ 355   2          default: break;
+ 356   2        }
+ 357   1      
+ 358   1        LED2A = ~seg_string >> 7;
+ 359   1        LED2B = ~seg_string >> 6 & 0x01;
+ 360   1        LED2C = ~seg_string >> 5 & 0x01;
+ 361   1        LED2D = ~seg_string >> 4 & 0x01;
+ 362   1        LED2E = ~seg_string >> 3 & 0x01;
+ 363   1        LED2F = ~seg_string >> 2 & 0x01;
+ 364   1        LED2G = ~seg_string >> 1 & 0x01;
+C51 COMPILER V9.57.0.0   SEG                                                               10/02/2024 09:41:08 PAGE 7   
+
+ 365   1        LED2DP = ~seg_string & 0x01;
+ 366   1      }
+ 367          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    484    ----
+   CODE SIZE        =    482    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

@@ -47,20 +47,33 @@ void Led_Trans(unsigned char *seg_string,unsigned char *seg_buf)
 	unsigned char i,j = 0;
 	unsigned char temp;
 	
-	for (i=0;i<2;i++,j++)
+	for (i=0;i<4;i++,j++)
 	{
 		switch(seg_string[j]){
-			case '0': temp = 0xFC; break;
-			case '1': temp = 0x60; break;
-			case '2': temp = 0xDA; break;
-			case '3': temp = 0xF2; break;
-			case '4': temp = 0x66; break;
-			case '5': temp = 0xB6; break;
-			case '6': temp = 0xBE; break;
-			case '7': temp = 0xE0; break;
-			case '8': temp = 0xFF; break;
-			case '9': temp = 0xF6; break;
-			default:  temp = 0xFC; break;
+//			case '0': temp = 0xFC; break;
+//			case '1': temp = 0x60; break;
+//			case '2': temp = 0xDA; break;
+//			case '3': temp = 0xF2; break;
+//			case '4': temp = 0x66; break;
+//			case '5': temp = 0xB6; break;
+//			case '6': temp = 0xBE; break;
+//			case '7': temp = 0xE0; break;
+//			case '8': temp = 0xFF; break;
+//			case '9': temp = 0xF6; break;
+//			default:  temp = 0xFC; break;
+			
+  			case '0': temp = 0xFC; break;
+				case '1': temp = 0x0C; break;
+				case '2': temp = 0xDA; break;
+				case '3': temp = 0x9E; break;
+				case '4': temp = 0x2E; break;
+				case '5': temp = 0xB6; break;
+				case '6': temp = 0xF6; break;
+				case '7': temp = 0x1C; break;
+				case '8': temp = 0xFE; break;
+				case '9': temp = 0x3E; break;
+				case '-': temp = 0x02; break;
+				default:  temp = 0xFC; break;
 		}
 		seg_buf[i] = temp;
 	}
@@ -185,32 +198,115 @@ seg_buf2:按键下方的LED显示开关，按位判断，可精确控制每一位LED ，并方便移植
 
 ======================================================================================
 */
+//void Seg_Disp1(unsigned char *seg_buf, unsigned char pos)
+//{
+//	unsigned char seg_string;
+//	
+//	switch(pos){	
+//		case 0:{		
+//			ADIG1 = 1;
+//			ADIG2 = ADIG3 = ADIG4 = 0;		
+//			seg_string = seg_buf[pos];	
+//			break;
+//		}
+//		case 1:{
+//			ADIG2 = 1;
+//			ADIG1 = ADIG3 = ADIG4 = 0;
+//			seg_string = seg_buf[pos];	
+//			break;
+//		}
+//		case 2:{
+//			ADIG3 = 1;
+//			ADIG1 = ADIG2 = ADIG4 = 0;
+//			seg_string = seg_buf[pos];
+//			break;
+//		}
+//		case 3:{
+//			ADIG4 = 1;
+//			ADIG1 = ADIG2 = ADIG3 = 0;
+//			seg_string = seg_buf[pos];	
+//			break;
+//		}
+//		default: break;
+//	}
+
+//	LED1A = ~seg_string >> 7;
+//	LED1B = ~seg_string >> 6 & 0x01;
+//	LED1C = ~seg_string >> 5 & 0x01;
+//	LED1D = ~seg_string >> 4 & 0x01;
+//	LED1E = ~seg_string >> 3 & 0x01;
+//	LED1F = ~seg_string >> 2 & 0x01;
+//	LED1G = ~seg_string >> 1 & 0x01;
+//	LED1DP = ~seg_string & 0x01;
+//}
+
+//void Seg_Disp2(unsigned char *seg_buf, unsigned char pos)
+//{
+//	unsigned char seg_string;
+//	
+//	switch(pos){	
+//		case 0:{		
+//			BDIG1 = 1;
+//			BDIG2 = BDIG3 = BDIG4 = 0;		
+//			seg_string = seg_buf[pos];	
+//			break;
+//		}
+//		case 1:{
+//			BDIG2 = 1;
+//			BDIG1 = BDIG3 = BDIG4 = 0;
+//			seg_string = seg_buf[pos];	
+//			break;
+//		}
+//		case 2:{
+//			BDIG3 = 1;
+//			BDIG1 = BDIG2 = BDIG4 = 0;
+//			seg_string = seg_buf[pos];
+//			break;
+//		}
+//		case 3:{
+//			BDIG4 = 1;
+//			BDIG1 = BDIG2 = BDIG3 = 0;
+//			seg_string = seg_buf[pos];	
+//			break;
+//		}
+//		default: break;
+//	}
+
+//	LED2A = ~seg_string >> 7;
+//	LED2B = ~seg_string >> 6 & 0x01;
+//	LED2C = ~seg_string >> 5 & 0x01;
+//	LED2D = ~seg_string >> 4 & 0x01;
+//	LED2E = ~seg_string >> 3 & 0x01;
+//	LED2F = ~seg_string >> 2 & 0x01;
+//	LED2G = ~seg_string >> 1 & 0x01;
+//	LED2DP = ~seg_string & 0x01;
+//}
 void Seg_Disp1(unsigned char *seg_buf, unsigned char pos)
 {
 	unsigned char seg_string;
 	
 	switch(pos){	
 		case 0:{		
-			ADIG1 = 1;
-			ADIG2 = ADIG3 = ADIG4 = 0;		
+			ADIG4 = 1;
+			ADIG1 = ADIG2 = ADIG3 = 0;	
 			seg_string = seg_buf[pos];	
 			break;
 		}
 		case 1:{
-			ADIG2 = 1;
-			ADIG1 = ADIG3 = ADIG4 = 0;
+			ADIG3 = 1;
+			ADIG1 = ADIG2 = ADIG4 = 0;
 			seg_string = seg_buf[pos];	
 			break;
 		}
 		case 2:{
-			ADIG3 = 1;
-			ADIG1 = ADIG2 = ADIG4 = 0;
+			ADIG2 = 1;
+			ADIG1 = ADIG3 = ADIG4 = 0;
 			seg_string = seg_buf[pos];
 			break;
 		}
 		case 3:{
-			ADIG4 = 1;
-			ADIG1 = ADIG2 = ADIG3 = 0;
+			ADIG1 = 1;
+			ADIG2 = ADIG3 = ADIG4 = 0;	
 			seg_string = seg_buf[pos];	
 			break;
 		}
@@ -233,26 +329,26 @@ void Seg_Disp2(unsigned char *seg_buf, unsigned char pos)
 	
 	switch(pos){	
 		case 0:{		
-			BDIG1 = 1;
-			BDIG2 = BDIG3 = BDIG4 = 0;		
+			BDIG4 = 1;
+			BDIG1 = BDIG2 = BDIG3 = 0;		
 			seg_string = seg_buf[pos];	
 			break;
 		}
 		case 1:{
-			BDIG2 = 1;
-			BDIG1 = BDIG3 = BDIG4 = 0;
+			BDIG3 = 1;
+			BDIG1 = BDIG2 = BDIG4 = 0;
 			seg_string = seg_buf[pos];	
 			break;
 		}
 		case 2:{
-			BDIG3 = 1;
-			BDIG1 = BDIG2 = BDIG4 = 0;
+			BDIG2 = 1;
+			BDIG1 = BDIG3 = BDIG4 = 0;
 			seg_string = seg_buf[pos];
 			break;
 		}
 		case 3:{
-			BDIG4 = 1;
-			BDIG1 = BDIG2 = BDIG3 = 0;
+			BDIG1 = 1;
+			BDIG2 = BDIG3 = BDIG4 = 0;
 			seg_string = seg_buf[pos];	
 			break;
 		}

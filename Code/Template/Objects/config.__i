@@ -1,1 +1,0 @@
-"Hardware\config.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(.\User;.\Hardware;.\Startup;.\Readme) DEBUG OBJECTEXTEND PRINT(.\Listings\config.lst) TABS (2) OBJECT(.\Objects\config.obj)
