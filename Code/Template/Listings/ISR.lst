@@ -1,10 +1,10 @@
-A51 MACRO ASSEMBLER  ISR                                                                  10/01/2024 10:36:15 PAGE     1
+A51 MACRO ASSEMBLER  ISR                                                                  10/08/2024 14:16:09 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.2.7.0
 OBJECT MODULE PLACED IN .\Objects\ISR.obj
-ASSEMBLER INVOKED BY: D:\Software\WorkSoftware\Keil5\C51\C51\BIN\A51.EXE Startup\ISR.ASM SET(SMALL) DEBUG PRINT(.\Listin
-                      gs\ISR.lst) OBJECT(.\Objects\ISR.obj) EP
+ASSEMBLER INVOKED BY: D:\Worksoftware\Keil\ARM\C51\BIN\A51.EXE Startup\ISR.ASM SET(SMALL) DEBUG PRINT(.\Listings\ISR.lst
+                      ) OBJECT(.\Objects\ISR.obj) EP
 
 LOC  OBJ            LINE     SOURCE
 
@@ -14,7 +14,7 @@ LOC  OBJ            LINE     SOURCE
 012D                   4     P0INT_ISR:
 012D 016B              5             JMP 006BH ;借用 13 号中断的入口地址-
                        6             END
-A51 MACRO ASSEMBLER  ISR                                                                  10/01/2024 10:36:15 PAGE     2
+A51 MACRO ASSEMBLER  ISR                                                                  10/08/2024 14:16:09 PAGE     2
 
 SYMBOL TABLE LISTING
 ------ ----- -------

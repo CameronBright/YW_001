@@ -3,10 +3,11 @@
         {
             "name": "Target 1",
             "includePath": [
-                "e:\\Masterpiece\\Product\\YW_001\\Code\\Template\\User",
-                "e:\\Masterpiece\\Product\\YW_001\\Code\\Template\\Hardware",
-                "e:\\Masterpiece\\Product\\YW_001\\Code\\Template\\Startup",
-                "e:\\Masterpiece\\Product\\YW_001\\Code\\Template\\Readme"
+                "d:\\Masterpiece\\Product\\YW_001\\Code\\Template\\User",
+                "d:\\Masterpiece\\Product\\YW_001\\Code\\Template\\Hardware",
+                "d:\\Masterpiece\\Product\\YW_001\\Code\\Template\\Startup",
+                "d:\\Masterpiece\\Product\\YW_001\\Code\\Template\\Readme",
+                "D:\\Worksoftware\\Keil\\ARM\\C51\\INC"
             ],
             "defines": [
                 "__C51__",
