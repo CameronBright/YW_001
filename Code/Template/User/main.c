@@ -231,83 +231,47 @@ void Peripheral_Init(void)//外设初始化函数
 void init_Uart2()//波特率11.0592
 
 {
+	 S2CON=0x10;   //打开允许接收
+	 T2L = 0xE8;    //设置定时初始值
+	 T2H = 0xFF;    //设置定时初始值
+	 AUXR|=0x04;   //开启T2定时器1T工作模式
+	 AUXR|=0x10;   //开启T2定时器T2R=1
 
-    S2CON=0x10;   //打开允许接收
-
-     T2L = 0xE8;    //设置定时初始值
-
-     T2H = 0xFF;    //设置定时初始值
-
-     AUXR|=0x04;   //开启T2定时器1T工作模式
-
-     AUXR|=0x10;   //开启T2定时器T2R=1
-
-       
-
-    
-
-     IE2|=0x01;//开启ES=1
-
-      P_SW2 &= 0xFE;//串口2p10p11
-
-    
-
-     B_TX2_Busy = 0;//忙检测
-
-     TX2_Cnt = 0;//发送计数
-
-    RX2_Cnt = 0;//接收计数
-
+	 IE2|=0x01;//开启ES=1
+	 P_SW2 &= 0xFE;//串口2p10p11
+	 B_TX2_Busy = 0;//忙检测
+	 TX2_Cnt = 0;//发送计数
+	 RX2_Cnt = 0;//接收计数
 }
 
 void Uart2Send(char dat)//u2发送单字符
 
 {
-
       while(B_TX2_Busy);
-
       B_TX2_Busy=1;
-
       S2BUF=dat;
-
 }
 
 void Delay1ms(unsigned char x)    //@12.000MHz
 
 {
-
    unsigned char i, j;
-
    i = 16;
-
    j = 147;
-
    while(x--)
-
    {
-
       do
-
       {
-
         while (--j);
-
       } while (--i);
-
    } 
-
 }
 
 void Uart2SendStr(char *puts)//U2发送字符串
-
 {
-
      while(*puts)
-
       {
-
         Uart2Send(*puts++);
-
       }
 
 }	
