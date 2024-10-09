@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   MAIN                                                              10/08/2024 14:50:50 PAGE 1   
+C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:02:37 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
@@ -10,7 +10,7 @@ line level    source
 
    1          /*
    2          
-   3          Version: 1.0.1
+   3          Version: 1.0.2
    4          Check out the Readme.txt for more details 
    5           
    6          */
@@ -39,68 +39,68 @@ line level    source
   29          void Delay(unsigned int delay); //定时器延时 会卡住当前函数，但不会影响整个代码
   30          void Peripheral_Init(void);//外设初始化函数
   31          
-  32          void UART2_config(u8 brt);   // 选择波特率, 2: 使用Timer2做波特率, 其它值: 无效.
-  33          void PrintString2(u8 *puts);
-  34          
-  35          //----------------可能需要修改的变量-------------------------------------
+  32          //串口功能函数
+  33          void init_Uart2();//串口2初始化
+  34          void Uart2Send(char dat);
+  35          void Uart2SendStr(char *puts);//发送数据
   36          
-  37          //刷新计数,按键10ms扫描一次,数码管200ms刷新一次
-  38          u16 key_slow_down = 0; //按键刷新计数
-  39          u16 disp_slow_down = 0; //显示刷新计数
-  40          
-  41          /*按键相关变量*/
-  42          u16 key_tick;        //long key press count
-  43          bit key_sw = 1;
-  44          bit keylong = 1;
-  45          
-  46          u8 key_value = 0;       //按键值
-  47          u8 key_down;            //按键下降沿
-  48          u8 key_up;              //上升沿
-  49          u8 key_old;             //上次的按键值
-  50          
-  51          u16 delay_tick;         //软件延时计数
+  37          //----------------可能需要修改的变量-------------------------------------
+  38          
+  39          //刷新计数,按键10ms扫描一次,数码管200ms刷新一次
+  40          u16 key_slow_down = 0; //按键刷新计数
+  41          u16 disp_slow_down = 0; //显示刷新计数
+  42          
+  43          /*按键相关变量*/
+  44          u16 key_tick;        //long key press count
+  45          bit key_sw = 1;
+  46          bit keylong = 1;
+  47          
+  48          u8 key_value = 0;       //按键值
+  49          u8 key_down;            //按键下降沿
+  50          u8 key_up;              //上升沿
+  51          u8 key_old;             //上次的按键值
   52          
-  53          /*数码管显示相关变量*/
-  54          char seg_string[4];     //数码管显示字符串
-C51 COMPILER V9.59.0.0   MAIN                                                              10/08/2024 14:50:50 PAGE 2   
+  53          u16 delay_tick;         //软件延时计数
+  54          
+C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:02:37 PAGE 2   
 
-  55          char seg_buf1[4];       //数码管1显示缓冲区
-  56          char seg_buf2[4];       //数码管2显示缓冲区
-  57          
-  58          u8 LED_buf;           //按键下LED控制 0b0011 1111 1为亮 0为灭
-  59          u8 pos = 0;             //数码管段选
-  60          
-  61          /*串口相关变量*/
-  62          u8  TX2_Cnt;    //发送计数
-  63          u8  RX2_Cnt;    //接收计数
-  64          bit B_TX2_Busy; //发送忙标志
+  55          /*数码管显示相关变量*/
+  56          char seg_string[4];     //数码管显示字符串
+  57          char seg_buf1[4];       //数码管1显示缓冲区
+  58          char seg_buf2[4];       //数码管2显示缓冲区
+  59          
+  60          u8 LED_buf;           //按键下LED控制 0b0011 1111 1为亮 0为灭
+  61          u8 pos = 0;             //数码管段选
+  62          
+  63          /*串口相关变量*/
+  64          u8  TX2_Cnt;    //U2发送计数
   65          
-  66          u8  xdata RX2_Buffer[UART2_BUF_LENGTH]; //接收缓冲
+  66          u8  RX2_Cnt;    //U2接收计数
   67          
-  68          /*外设相关变量*/
-  69          u16 buzzer_tick;        //蜂鸣器短响计数
-  70          
-  71          /*代码控制变量*/
-  72          u8 mode;                //模式切换
-  73          
-  74          void main(){
-  75   1        GPIO_Init();      //引脚初始化
-  76   1        Timer1_Init();    //定时器初始化
-  77   1        UART2_config(2);  // 选择波特率, 2: 使用Timer2做波特率, 其它值: 无效.
-  78   1        EA = 1;           //打开总中断
-  79   1        Config_Init();    //初始化配置
-  80   1        Peripheral_Init();//外设函数初始状态
-  81   1        
-  82   1        PrintString2("STC8H8K64U UART2 Test Programme!\r\n");  //UART2发送一个字符串
-  83   1        
-  84   1        while(1)
-  85   1        {
-  86   2                  if((TX2_Cnt != RX2_Cnt) && (!B_TX2_Busy))   //收到数据, 发送空闲
-  87   2              {
-  88   3                  S2BUF = RX2_Buffer[TX2_Cnt];
-  89   3                  B_TX2_Busy = 1;
-  90   3                  if(++TX2_Cnt >= UART2_BUF_LENGTH)   TX2_Cnt = 0;
-  91   3              }
+  68          bit B_TX2_Busy; //U2发送忙标志
+  69          
+  70          u8  RX2_Buffer[16]; //u2接收缓冲
+  71          
+  72          /*外设相关变量*/
+  73          u16 buzzer_tick;        //蜂鸣器短响计数
+  74          
+  75          /*代码控制变量*/
+  76          u8 mode;                //模式切换
+  77          
+  78          void main(){
+  79   1        //P_SW2 |= 0x80;  //扩展寄存器(XFR)访问使能
+  80   1        GPIO_Init();      //引脚初始化
+  81   1        Timer1_Init();    //定时器初始化
+  82   1        
+  83   1        init_Uart2();
+  84   1        
+  85   1        EA = 1;           //打开总中断
+  86   1        Config_Init();    //初始化配置
+  87   1        Peripheral_Init();//外设函数初始状态
+  88   1        
+  89   1        Uart2SendStr("STC8H TEST!");
+  90   1        while(1)
+  91   1        {
   92   2          
   93   2          
   94   2          Key_Proc();
@@ -108,109 +108,109 @@ line level    source
   96   2          LED1 = 0;
   97   2          LED2 = 0;
   98   2          LED3 = 0;   
-  99   2          
- 100   2        }
- 101   1      } 
- 102          
- 103          //================中断函数=======================
- 104          void Timer1_Isr(void) interrupt 3   //1ms 中断一次
- 105          {
- 106   1        //本中断函数内全是赋值，没有运算，每次中断时间不会过长
- 107   1        if(++key_slow_down == 10) key_slow_down = 0;   //10ms扫描一次按键
- 108   1        if(++disp_slow_down == 200) disp_slow_down = 0;//200ms刷新一次数码管
- 109   1         
- 110   1      //--------------------1s定时器---------------------------
- 111   1        
- 112   1      
- 113   1      //--------------------外设控制---------------------------
- 114   1        
- 115   1        //按键长短按计时
- 116   1        if(key_tick > 0) key_tick--;  
-C51 COMPILER V9.59.0.0   MAIN                                                              10/08/2024 14:50:50 PAGE 3   
+  99   2          Uart2SendStr("STC8H TEST!");
+ 100   2          
+ 101   2        }
+ 102   1      } 
+ 103          
+ 104          //================中断函数=======================
+ 105          void Timer1_Isr(void) interrupt 3   //1ms 中断一次
+ 106          {
+ 107   1        //本中断函数内全是赋值，没有运算，每次中断时间不会过长
+ 108   1        if(++key_slow_down == 10) key_slow_down = 0;   //10ms扫描一次按键
+ 109   1        if(++disp_slow_down == 200) disp_slow_down = 0;//200ms刷新一次数码管
+ 110   1         
+ 111   1      //--------------------1s定时器---------------------------
+ 112   1        
+ 113   1      
+ 114   1      //--------------------外设控制---------------------------
+ 115   1        
+ 116   1        //按键长短按计时
+C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:02:37 PAGE 3   
 
- 117   1          
- 118   1        //软件延时
- 119   1        if(delay_tick > 0) delay_tick--;//延时函数 使用会卡住当前函数，但不影响其他功能
- 120   1          
- 121   1        //数码管段选刷新
- 122   1      
- 123   1        Seg_Disp1(seg_buf1,pos);
- 124   1        Seg_Disp2(seg_buf2,pos);
- 125   1        if(++pos > 3) pos = 0;
- 126   1      }
- 127          
- 128          //================按键逻辑函数=======================
- 129          void Key_Proc(void)        //Keystroke process function
- 130          {
- 131   1        if(key_slow_down) return;   //10ms进入一次此函数
- 132   1          key_slow_down = 1;
- 133   1          
- 134   1        key_value = Key_Scan(); //读取键值 强制消抖
- 135   1        key_down = key_value & (key_value ^ key_old); //下降沿
- 136   1        key_up = ~key_value & (key_value ^ key_old);  //上升沿
- 137   1        key_old = key_value;
- 138   1        
- 139   1        if(key_down)       //长按3秒
- 140   1          key_tick = 3000;
- 141   1        
- 142   1         //key_old键值 tick按下计数  long自锁，保证按键代码只触发一次
- 143   1        if(key_old && key_tick == 0 && keylong){
- 144   2          keylong = 0;    
- 145   2          if(key_old == 1){     //长按童锁键    
- 146   3            //------按键1长按功能--------
- 147   3            
- 148   3            //------按键1长按功能--------       
- 149   3          }
- 150   2          if(key_old == 4){ //长按磁化键  
- 151   3            //------按键4长按功能--------
- 152   3      
- 153   3            //------按键4长按功能--------   
- 154   3          }
- 155   2        }
- 156   1        
- 157   1        if(key_up) //keydown-keyup顺序不能更改
- 158   1          keylong = 1;
- 159   1        
- 160   1        if(key_tick && key_sw){
- 161   2          switch(key_up)
- 162   2          {
- 163   3            case 1://按键1
- 164   3            {     
- 165   4              if(++mode > 3) mode = 0;
- 166   4              break;
- 167   4            }
- 168   3            case 2://按键2
- 169   3            {
- 170   4              if(--mode == 0) mode = 0;
- 171   4              break;
- 172   4            }
- 173   3            case 3://按键3
- 174   3            {
- 175   4              Buzzer ^= 1;
- 176   4              break;
- 177   4            }
- 178   3            case 4://按键4
-C51 COMPILER V9.59.0.0   MAIN                                                              10/08/2024 14:50:50 PAGE 4   
+ 117   1        if(key_tick > 0) key_tick--;  
+ 118   1          
+ 119   1        //软件延时
+ 120   1        if(delay_tick > 0) delay_tick--;//延时函数 使用会卡住当前函数，但不影响其他功能
+ 121   1          
+ 122   1        //数码管段选刷新
+ 123   1      
+ 124   1        Seg_Disp1(seg_buf1,pos);
+ 125   1        Seg_Disp2(seg_buf2,pos);
+ 126   1        if(++pos > 3) pos = 0;
+ 127   1      }
+ 128          
+ 129          //================按键逻辑函数=======================
+ 130          void Key_Proc(void)        //Keystroke process function
+ 131          {
+ 132   1        if(key_slow_down) return;   //10ms进入一次此函数
+ 133   1          key_slow_down = 1;
+ 134   1          
+ 135   1        key_value = Key_Scan(); //读取键值 强制消抖
+ 136   1        key_down = key_value & (key_value ^ key_old); //下降沿
+ 137   1        key_up = ~key_value & (key_value ^ key_old);  //上升沿
+ 138   1        key_old = key_value;
+ 139   1        
+ 140   1        if(key_down)       //长按3秒
+ 141   1          key_tick = 3000;
+ 142   1        
+ 143   1         //key_old键值 tick按下计数  long自锁，保证按键代码只触发一次
+ 144   1        if(key_old && key_tick == 0 && keylong){
+ 145   2          keylong = 0;    
+ 146   2          if(key_old == 1){     //长按童锁键    
+ 147   3            //------按键1长按功能--------
+ 148   3            
+ 149   3            //------按键1长按功能--------       
+ 150   3          }
+ 151   2          if(key_old == 4){ //长按磁化键  
+ 152   3            //------按键4长按功能--------
+ 153   3      
+ 154   3            //------按键4长按功能--------   
+ 155   3          }
+ 156   2        }
+ 157   1        
+ 158   1        if(key_up) //keydown-keyup顺序不能更改
+ 159   1          keylong = 1;
+ 160   1        
+ 161   1        if(key_tick && key_sw){
+ 162   2          switch(key_up)
+ 163   2          {
+ 164   3            case 1://按键1
+ 165   3            {     
+ 166   4              if(++mode > 3) mode = 0;
+ 167   4              break;
+ 168   4            }
+ 169   3            case 2://按键2
+ 170   3            {
+ 171   4              if(--mode == 0) mode = 0;
+ 172   4              break;
+ 173   4            }
+ 174   3            case 3://按键3
+ 175   3            {
+ 176   4              Buzzer ^= 1;
+ 177   4              break;
+ 178   4            }
+C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:02:37 PAGE 4   
 
- 179   3            {  
- 180   4              mode++;
- 181   4              break;                             
- 182   4            }                                    
- 183   3            default:                             
- 184   3              break;
- 185   3          }
- 186   2        }
- 187   1          
- 188   1      }
- 189          
- 190          //================显示逻辑函数=======================
- 191          void Disp_Proc(void)       //LCD Dsiplay process function
- 192          {
- 193   1        if(disp_slow_down) return;   //200ms进入一次此函数(200ms刷新一次屏幕)
- 194   1          disp_slow_down = 1;
- 195   1        
- 196   1        sprintf(seg_string,"---%d",(unsigned int)mode); 
- 197   1        //sprintf(seg_string,"0001"); 
+ 179   3            case 4://按键4
+ 180   3            {  
+ 181   4              mode++;
+ 182   4              break;                             
+ 183   4            }                                    
+ 184   3            default:                             
+ 185   3              break;
+ 186   3          }
+ 187   2        }
+ 188   1          
+ 189   1      }
+ 190          
+ 191          //================显示逻辑函数=======================
+ 192          void Disp_Proc(void)       //LCD Dsiplay process function
+ 193          {
+ 194   1        if(disp_slow_down) return;   //200ms进入一次此函数(200ms刷新一次屏幕)
+ 195   1          disp_slow_down = 1;
+ 196   1        
+ 197   1        sprintf(seg_string,"---%d",(unsigned int)mode); 
  198   1        Led_Trans(seg_string,seg_buf1); 
  199   1      
  200   1        sprintf(seg_string,"----");
@@ -244,110 +244,133 @@ line level    source
  228          
  229          
  230          //================串口2功能函数=======================
- 231          
- 232          //========================================================================
- 233          // 函数: void PrintString2(u8 *puts)
- 234          // 描述: 串口2发送字符串函数。
- 235          // 参数: puts:  字符串指针.
- 236          // 返回: none.
- 237          // 版本: VER1.0
- 238          // 日期: 2014-11-28
- 239          // 备注: 
- 240          //========================================================================
-C51 COMPILER V9.59.0.0   MAIN                                                              10/08/2024 14:50:50 PAGE 5   
+ 231          void init_Uart2()//波特率11.0592
+ 232          
+ 233          {
+ 234   1      
+ 235   1          S2CON=0x10;   //打开允许接收
+ 236   1      
+ 237   1           T2L = 0xE8;    //设置定时初始值
+ 238   1      
+ 239   1           T2H = 0xFF;    //设置定时初始值
+ 240   1      
+C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:02:37 PAGE 5   
 
- 241          void PrintString2(unsigned char *puts)
- 242          {
- 243   1          for (; *puts != 0;  puts++)     //遇到停止符0结束
- 244   1          {
- 245   2              S2BUF = *puts;
- 246   2              B_TX2_Busy = 1;
- 247   2              while(B_TX2_Busy);
- 248   2          }
- 249   1      }
- 250          
- 251          //========================================================================
- 252          // 函数: SetTimer2Baudraye(u16 dat)
- 253          // 描述: 设置Timer2做波特率发生器。
- 254          // 参数: dat: Timer2的重装值.
- 255          // 返回: none.
- 256          // 版本: VER1.0
- 257          // 日期: 2014-11-28
- 258          // 备注: 
- 259          //========================================================================
- 260          void SetTimer2Baudraye(unsigned int dat)  // 使用Timer2做波特率.
- 261          {
- 262   1          AUXR &= ~(1<<4);    //Timer stop
- 263   1          AUXR &= ~(1<<3);    //Timer2 set As Timer
- 264   1          AUXR |=  (1<<2);    //Timer2 set as 1T mode
- 265   1          T2H = dat / 256;
- 266   1          T2L = dat % 256;
- 267   1          IE2  &= ~(1<<2);    //禁止中断
- 268   1          AUXR |=  (1<<4);    //Timer run enable
- 269   1      }
- 270          
- 271          //========================================================================
- 272          // 函数: void UART2_config(u8 brt)
- 273          // 描述: UART2初始化函数。
- 274          // 参数: brt: 选择波特率, 2: 使用Timer2做波特率, 其它值: 无效. 
- 275          // 返回: none.
- 276          // 版本: VER1.0
- 277          // 日期: 2014-11-28
- 278          // 备注: 
- 279          //========================================================================
- 280          void UART2_config(unsigned char brt)    // 选择波特率, 2: 使用Timer2做波特率, 其它值: 无效.
- 281          {
- 282   1          /*********** 波特率固定使用定时器2 *****************/
- 283   1          if(brt == 2)
- 284   1          {
- 285   2              SetTimer2Baudraye(65536UL - (MAIN_Fosc / 4) / Baudrate2);
- 286   2      
- 287   2              S2CON &= ~(1<<7);   // 8位数据, 1位起始位, 1位停止位, 无校验
- 288   2              IE2   |= 1;         //允许中断
- 289   2              S2CON |= (1<<4);    //允许接收
- 290   2              P_SW2 &= ~0x01; 
- 291   2              P_SW2 |= 0;         //UART2 switch to: 0: P1.0 P1.1,  1: P4.6 P4.7
- 292   2      
- 293   2              B_TX2_Busy = 0;
- 294   2              TX2_Cnt = 0;
- 295   2              RX2_Cnt = 0;
- 296   2          }
- 297   1      }
- 298          
- 299          //========================================================================
- 300          // 函数: void UART2_int (void) interrupt UART2_VECTOR
- 301          // 描述: UART2中断函数。
- 302          // 参数: nine.
-C51 COMPILER V9.59.0.0   MAIN                                                              10/08/2024 14:50:50 PAGE 6   
+ 241   1           AUXR|=0x04;   //开启T2定时器1T工作模式
+ 242   1      
+ 243   1           AUXR|=0x10;   //开启T2定时器T2R=1
+ 244   1      
+ 245   1             
+ 246   1      
+ 247   1          
+ 248   1      
+ 249   1           IE2|=0x01;//开启ES=1
+ 250   1      
+ 251   1            P_SW2 &= 0xFE;//串口2p10p11
+ 252   1      
+ 253   1          
+ 254   1      
+ 255   1           B_TX2_Busy = 0;//忙检测
+ 256   1      
+ 257   1           TX2_Cnt = 0;//发送计数
+ 258   1      
+ 259   1          RX2_Cnt = 0;//接收计数
+ 260   1      
+ 261   1      }
+ 262          
+ 263          void Uart2Send(char dat)//u2发送单字符
+ 264          
+ 265          {
+ 266   1      
+ 267   1            while(B_TX2_Busy);
+ 268   1      
+ 269   1            B_TX2_Busy=1;
+ 270   1      
+ 271   1            S2BUF=dat;
+ 272   1      
+ 273   1      }
+ 274          
+ 275          void Delay1ms(unsigned char x)    //@12.000MHz
+ 276          
+ 277          {
+ 278   1      
+ 279   1         unsigned char i, j;
+ 280   1      
+ 281   1         i = 16;
+ 282   1      
+ 283   1         j = 147;
+ 284   1      
+ 285   1         while(x--)
+ 286   1      
+ 287   1         {
+ 288   2      
+ 289   2            do
+ 290   2      
+ 291   2            {
+ 292   3      
+ 293   3              while (--j);
+ 294   3      
+ 295   3            } while (--i);
+ 296   2      
+ 297   2         } 
+ 298   1      
+ 299   1      }
+ 300          
+ 301          void Uart2SendStr(char *puts)//U2发送字符串
+ 302          
+C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:02:37 PAGE 6   
 
- 303          // 返回: none.
- 304          // 版本: VER1.0
- 305          // 日期: 2014-11-28
- 306          // 备注: 
- 307          //========================================================================
- 308          void UART2_int (void) interrupt 8
- 309          {
- 310   1          if((S2CON & 1) != 0)
- 311   1          {
- 312   2              S2CON &= ~1;    //Clear Rx flag
- 313   2              RX2_Buffer[RX2_Cnt] = S2BUF;
- 314   2              if(++RX2_Cnt >= UART2_BUF_LENGTH)   RX2_Cnt = 0;
- 315   2          }
- 316   1      
- 317   1          if((S2CON & 2) != 0)
- 318   1          {
- 319   2              S2CON &= ~2;    //Clear Tx flag
- 320   2              B_TX2_Busy = 0;
- 321   2          }
- 322   1      }
+ 303          {
+ 304   1      
+ 305   1           while(*puts)
+ 306   1      
+ 307   1            {
+ 308   2      
+ 309   2              Uart2Send(*puts++);
+ 310   2      
+ 311   2            }
+ 312   1      
+ 313   1      } 
+ 314          
+ 315          void UART2_isr (void) interrupt 8//Uart2串口中断入口
+ 316          
+ 317          {
+ 318   1      
+ 319   1      
+ 320   1          if((S2CON & 1) != 0)
+ 321   1      
+ 322   1          {
+ 323   2      
+ 324   2              S2CON &= ~1;    //Clear Rx flag
+ 325   2      
+ 326   2              RX2_Buffer[RX2_Cnt++] = S2BUF;
+ 327   2      
+ 328   2              RX2_Cnt&=0x0f;
+ 329   2      
+ 330   2                SBUF=S2BUF;//发送至串口2
+ 331   2      
+ 332   2          }
+ 333   1      
+ 334   1          if((S2CON & 2) != 0)
+ 335   1      
+ 336   1          {
+ 337   2      
+ 338   2              S2CON &= ~2;    //Clear Tx flag
+ 339   2      
+ 340   2              B_TX2_Busy = 0;
+ 341   2      
+ 342   2          }
+ 343   1      
+ 344   1      }
+ 345          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    642    ----
-   CONSTANT SIZE    =     46    ----
-   XDATA SIZE       =     64    ----
+   CODE SIZE        =    603    ----
+   CONSTANT SIZE    =     23    ----
+   XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     31    ----
+   DATA SIZE        =     47       3
    IDATA SIZE       =   ----    ----
    BIT SIZE         =      3    ----
 END OF MODULE INFORMATION.

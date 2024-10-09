@@ -1,6 +1,6 @@
 /*
 
-Version: 1.0.1
+Version: 1.0.2
 Check out the Readme.txt for more details 
  
 */
@@ -29,8 +29,10 @@ void Disp_Proc(void);  	   //LCD Dsiplay process function
 void Delay(unsigned int delay); //定时器延时 会卡住当前函数，但不会影响整个代码
 void Peripheral_Init(void);//外设初始化函数
 
-void UART2_config(u8 brt);   // 选择波特率, 2: 使用Timer2做波特率, 其它值: 无效.
-void PrintString2(u8 *puts);
+//串口功能函数
+void init_Uart2();//串口2初始化
+void Uart2Send(char dat);
+void Uart2SendStr(char *puts);//发送数据
 
 //----------------可能需要修改的变量-------------------------------------
 
@@ -59,11 +61,13 @@ u8 LED_buf;						//按键下LED控制 0b0011 1111 1为亮 0为灭
 u8 pos = 0;  						//数码管段选
 
 /*串口相关变量*/
-u8  TX2_Cnt;    //发送计数
-u8  RX2_Cnt;    //接收计数
-bit B_TX2_Busy; //发送忙标志
+u8  TX2_Cnt;    //U2发送计数
 
-u8  xdata RX2_Buffer[UART2_BUF_LENGTH]; //接收缓冲
+u8  RX2_Cnt;    //U2接收计数
+
+bit B_TX2_Busy; //U2发送忙标志
+
+u8  RX2_Buffer[16]; //u2接收缓冲
 
 /*外设相关变量*/
 u16 buzzer_tick;        //蜂鸣器短响计数
@@ -72,23 +76,19 @@ u16 buzzer_tick;        //蜂鸣器短响计数
 u8 mode;                //模式切换
 
 void main(){
+	//P_SW2 |= 0x80;  //扩展寄存器(XFR)访问使能
 	GPIO_Init();			//引脚初始化
 	Timer1_Init();		//定时器初始化
-	UART2_config(2);  // 选择波特率, 2: 使用Timer2做波特率, 其它值: 无效.
+	
+	init_Uart2();
+	
 	EA = 1;         	//打开总中断
 	Config_Init();  	//初始化配置
 	Peripheral_Init();//外设函数初始状态
 	
-	PrintString2("STC8H8K64U UART2 Test Programme!\r\n");  //UART2发送一个字符串
-	
+	Uart2SendStr("STC8H TEST!");
 	while(1)
 	{
-		        if((TX2_Cnt != RX2_Cnt) && (!B_TX2_Busy))   //收到数据, 发送空闲
-        {
-            S2BUF = RX2_Buffer[TX2_Cnt];
-            B_TX2_Busy = 1;
-            if(++TX2_Cnt >= UART2_BUF_LENGTH)   TX2_Cnt = 0;
-        }
 		
 		
 		Key_Proc();
@@ -96,6 +96,7 @@ void main(){
 		LED1 = 0;
 		LED2 = 0;
 		LED3 = 0;		
+		Uart2SendStr("STC8H TEST!");
 		
 	}
 } 
@@ -194,7 +195,6 @@ void Disp_Proc(void)  	   //LCD Dsiplay process function
 		disp_slow_down = 1;
 	
 	sprintf(seg_string,"---%d",(unsigned int)mode); 
-	//sprintf(seg_string,"0001"); 
 	Led_Trans(seg_string,seg_buf1); 
 
 	sprintf(seg_string,"----");
@@ -228,95 +228,118 @@ void Peripheral_Init(void)//外设初始化函数
 
 
 //================串口2功能函数=======================
+void init_Uart2()//波特率11.0592
 
-//========================================================================
-// 函数: void PrintString2(u8 *puts)
-// 描述: 串口2发送字符串函数。
-// 参数: puts:  字符串指针.
-// 返回: none.
-// 版本: VER1.0
-// 日期: 2014-11-28
-// 备注: 
-//========================================================================
-void PrintString2(unsigned char *puts)
 {
-    for (; *puts != 0;  puts++)     //遇到停止符0结束
-    {
-        S2BUF = *puts;
-        B_TX2_Busy = 1;
-        while(B_TX2_Busy);
-    }
+
+    S2CON=0x10;   //打开允许接收
+
+     T2L = 0xE8;    //设置定时初始值
+
+     T2H = 0xFF;    //设置定时初始值
+
+     AUXR|=0x04;   //开启T2定时器1T工作模式
+
+     AUXR|=0x10;   //开启T2定时器T2R=1
+
+       
+
+    
+
+     IE2|=0x01;//开启ES=1
+
+      P_SW2 &= 0xFE;//串口2p10p11
+
+    
+
+     B_TX2_Busy = 0;//忙检测
+
+     TX2_Cnt = 0;//发送计数
+
+    RX2_Cnt = 0;//接收计数
+
 }
 
-//========================================================================
-// 函数: SetTimer2Baudraye(u16 dat)
-// 描述: 设置Timer2做波特率发生器。
-// 参数: dat: Timer2的重装值.
-// 返回: none.
-// 版本: VER1.0
-// 日期: 2014-11-28
-// 备注: 
-//========================================================================
-void SetTimer2Baudraye(unsigned int dat)  // 使用Timer2做波特率.
+void Uart2Send(char dat)//u2发送单字符
+
 {
-    AUXR &= ~(1<<4);    //Timer stop
-    AUXR &= ~(1<<3);    //Timer2 set As Timer
-    AUXR |=  (1<<2);    //Timer2 set as 1T mode
-    T2H = dat / 256;
-    T2L = dat % 256;
-    IE2  &= ~(1<<2);    //禁止中断
-    AUXR |=  (1<<4);    //Timer run enable
+
+      while(B_TX2_Busy);
+
+      B_TX2_Busy=1;
+
+      S2BUF=dat;
+
 }
 
-//========================================================================
-// 函数: void UART2_config(u8 brt)
-// 描述: UART2初始化函数。
-// 参数: brt: 选择波特率, 2: 使用Timer2做波特率, 其它值: 无效. 
-// 返回: none.
-// 版本: VER1.0
-// 日期: 2014-11-28
-// 备注: 
-//========================================================================
-void UART2_config(unsigned char brt)    // 选择波特率, 2: 使用Timer2做波特率, 其它值: 无效.
+void Delay1ms(unsigned char x)    //@12.000MHz
+
 {
-    /*********** 波特率固定使用定时器2 *****************/
-    if(brt == 2)
-    {
-        SetTimer2Baudraye(65536UL - (MAIN_Fosc / 4) / Baudrate2);
 
-        S2CON &= ~(1<<7);   // 8位数据, 1位起始位, 1位停止位, 无校验
-        IE2   |= 1;         //允许中断
-        S2CON |= (1<<4);    //允许接收
-        P_SW2 &= ~0x01; 
-        P_SW2 |= 0;         //UART2 switch to: 0: P1.0 P1.1,  1: P4.6 P4.7
+   unsigned char i, j;
 
-        B_TX2_Busy = 0;
-        TX2_Cnt = 0;
-        RX2_Cnt = 0;
-    }
+   i = 16;
+
+   j = 147;
+
+   while(x--)
+
+   {
+
+      do
+
+      {
+
+        while (--j);
+
+      } while (--i);
+
+   } 
+
 }
 
-//========================================================================
-// 函数: void UART2_int (void) interrupt UART2_VECTOR
-// 描述: UART2中断函数。
-// 参数: nine.
-// 返回: none.
-// 版本: VER1.0
-// 日期: 2014-11-28
-// 备注: 
-//========================================================================
-void UART2_int (void) interrupt 8
+void Uart2SendStr(char *puts)//U2发送字符串
+
 {
+
+     while(*puts)
+
+      {
+
+        Uart2Send(*puts++);
+
+      }
+
+}	
+
+void UART2_isr (void) interrupt 8//Uart2串口中断入口
+
+{
+
+
     if((S2CON & 1) != 0)
+
     {
+
         S2CON &= ~1;    //Clear Rx flag
-        RX2_Buffer[RX2_Cnt] = S2BUF;
-        if(++RX2_Cnt >= UART2_BUF_LENGTH)   RX2_Cnt = 0;
+
+        RX2_Buffer[RX2_Cnt++] = S2BUF;
+
+        RX2_Cnt&=0x0f;
+
+          SBUF=S2BUF;//发送至串口2
+
     }
 
     if((S2CON & 2) != 0)
+
     {
+
         S2CON &= ~2;    //Clear Tx flag
+
         B_TX2_Busy = 0;
+
     }
+
 }
+

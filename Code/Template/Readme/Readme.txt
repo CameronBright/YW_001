@@ -1,13 +1,13 @@
 //-------------------------------------------------------------
 
-Program versions : 1.0.1
+Program versions : 1.0.2
 
 Descrription: 
 	This is the code for the water cooler.
 	
 Information:
 	Chip: STC8H8K64U
-	Clock: 11.0592MHZ 	
+	Clock:11.0592MHZ 	
 	
 Function:
 	
@@ -26,5 +26,6 @@ modifier: Cameron Bright
 Change Log:
 	V0.1  Sep 23th 2024     ||   1  新建工程，GPIO口配置以及基本框架配置完成
 	V1.0.1 Sep 30th 2024    ||   1  添加了数码管驱动代码以及串口驱动代码,未完善
+	V1.0.2 Oct 9th  2024    ||   1  修改了串口的收发函数
 	
 //------------------------------------------------------------
