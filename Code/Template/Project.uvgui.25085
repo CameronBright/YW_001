@@ -93,8 +93,8 @@
       <flags>2</flags>
       <showCmd>3</showCmd>
       <MinPosition>
-        <xPos>-1</xPos>
-        <yPos>-1</yPos>
+        <xPos>-32000</xPos>
+        <yPos>-32000</yPos>
       </MinPosition>
       <MaxPosition>
         <xPos>-1</xPos>
@@ -3606,9 +3606,9 @@
       <ActiveTab>0</ActiveTab>
       <Doc>
         <Name>.\User\main.c</Name>
-        <ColumnNumber>1</ColumnNumber>
-        <TopLine>254</TopLine>
-        <CurrentLine>245</CurrentLine>
+        <ColumnNumber>2</ColumnNumber>
+        <TopLine>256</TopLine>
+        <CurrentLine>277</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
         <PaneID>0</PaneID>
@@ -3718,9 +3718,9 @@
       </Doc>
       <Doc>
         <Name>.\Hardware\key.h</Name>
-        <ColumnNumber>17</ColumnNumber>
+        <ColumnNumber>0</ColumnNumber>
         <TopLine>1</TopLine>
-        <CurrentLine>8</CurrentLine>
+        <CurrentLine>14</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
         <PaneID>0</PaneID>

@@ -282,7 +282,7 @@ void UART2_isr (void) interrupt 8//Uart2串口中断入口
     if((S2CON & 1) != 0)
     {
         S2CON &= ~1;    //Clear Rx flag
-        RX2_Buffer[RX2_Cnt++] = S2BUF;
+        RX2_Buffer[RX2_Cnt  ++] = S2BUF;
         RX2_Cnt&=0x0f;
     }
     if((S2CON & 2) != 0)
@@ -292,4 +292,6 @@ void UART2_isr (void) interrupt 8//Uart2串口中断入口
     }
 
 }
+
+
 
