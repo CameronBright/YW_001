@@ -279,30 +279,16 @@ void Uart2SendStr(char *puts)//U2发送字符串
 void UART2_isr (void) interrupt 8//Uart2串口中断入口
 
 {
-
-
     if((S2CON & 1) != 0)
-
     {
-
         S2CON &= ~1;    //Clear Rx flag
-
         RX2_Buffer[RX2_Cnt++] = S2BUF;
-
         RX2_Cnt&=0x0f;
-
-          SBUF=S2BUF;//发送至串口2
-
     }
-
     if((S2CON & 2) != 0)
-
     {
-
         S2CON &= ~2;    //Clear Tx flag
-
         B_TX2_Busy = 0;
-
     }
 
 }

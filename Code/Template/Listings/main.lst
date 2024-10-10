@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:28:16 PAGE 1   
+C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:44:01 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
@@ -62,7 +62,7 @@ line level    source
   52          
   53          u16 delay_tick;         //软件延时计数
   54          
-C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:28:16 PAGE 2   
+C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:44:01 PAGE 2   
 
   55          /*数码管显示相关变量*/
   56          char seg_string[4];     //数码管显示字符串
@@ -126,7 +126,7 @@ line level    source
  114   1      //--------------------外设控制---------------------------
  115   1        
  116   1        //按键长短按计时
-C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:28:16 PAGE 3   
+C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:44:01 PAGE 3   
 
  117   1        if(key_tick > 0) key_tick--;  
  118   1          
@@ -190,7 +190,7 @@ line level    source
  176   4              Buzzer ^= 1;
  177   4              break;
  178   4            }
-C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:28:16 PAGE 4   
+C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:44:01 PAGE 4   
 
  179   3            case 4://按键4
  180   3            {  
@@ -254,7 +254,7 @@ line level    source
  238   1         AUXR|=0x10;   //开启T2定时器T2R=1
  239   1      
  240   1         IE2|=0x01;//开启ES=1
-C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:28:16 PAGE 5   
+C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:44:01 PAGE 5   
 
  241   1         P_SW2 &= 0xFE;//串口2p10p11
  242   1         B_TX2_Busy = 0;//忙检测
@@ -297,42 +297,29 @@ line level    source
  279          void UART2_isr (void) interrupt 8//Uart2串口中断入口
  280          
  281          {
- 282   1      
- 283   1      
- 284   1          if((S2CON & 1) != 0)
- 285   1      
- 286   1          {
- 287   2      
- 288   2              S2CON &= ~1;    //Clear Rx flag
- 289   2      
- 290   2              RX2_Buffer[RX2_Cnt++] = S2BUF;
- 291   2      
- 292   2              RX2_Cnt&=0x0f;
- 293   2      
- 294   2                SBUF=S2BUF;//发送至串口2
- 295   2      
- 296   2          }
- 297   1      
- 298   1          if((S2CON & 2) != 0)
- 299   1      
- 300   1          {
- 301   2      
- 302   2              S2CON &= ~2;    //Clear Tx flag
-C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:28:16 PAGE 6   
-
- 303   2      
- 304   2              B_TX2_Busy = 0;
- 305   2      
- 306   2          }
- 307   1      
- 308   1      }
- 309          
+ 282   1          if((S2CON & 1) != 0)
+ 283   1          {
+ 284   2              S2CON &= ~1;    //Clear Rx flag
+ 285   2              RX2_Buffer[RX2_Cnt++] = S2BUF;
+ 286   2              RX2_Cnt&=0x0f;
+ 287   2              SBUF=S2BUF;//发送至串口2
+ 288   2          }
+ 289   1          if((S2CON & 2) != 0)
+ 290   1          {
+ 291   2              S2CON &= ~2;    //Clear Tx flag
+ 292   2              B_TX2_Busy = 0;
+ 293   2          }
+ 294   1      
+ 295   1      }
+ 296          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
    CODE SIZE        =    603    ----
    CONSTANT SIZE    =     23    ----
    XDATA SIZE       =   ----    ----
+C51 COMPILER V9.59.0.0   MAIN                                                              10/09/2024 16:44:01 PAGE 6   
+
    PDATA SIZE       =   ----    ----
    DATA SIZE        =     47       3
    IDATA SIZE       =   ----    ----
